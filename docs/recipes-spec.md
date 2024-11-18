@@ -8,6 +8,8 @@
 
 **Response Success Body :**
 
+- 200 : OK
+
 ```json
 {
   "status": "success",
@@ -74,6 +76,8 @@
 - search : Search by name, ingredient, and tags using like (optional)
 
 **Response Success Body :**
+
+- 200 : OK
 
 ```json
 {
@@ -157,6 +161,8 @@
 
 **Response Success Body :**
 
+- 201 : Created
+
 ```json
 {
   "status": "success",
@@ -234,6 +240,8 @@
 
 **Response Success Body :**
 
+- 200 : OK
+
 ```json
 {
   "status": "success",
@@ -273,6 +281,8 @@
 - Authorization : token
 
 **Response Success Body :**
+
+- 200 : OK
 
 ```json
 {

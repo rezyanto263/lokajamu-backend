@@ -114,7 +114,7 @@
 
 ## Add Article API
 
-**Endpoint :** GET /api/articles/:id
+**Endpoint :** GET /api/articles
 
 **Request Body :**
 ```json
@@ -142,6 +142,9 @@
 ```
 
 **Response Success Body :**
+
+- 201 : Created
+
 ```json
 {
   "status": "success",
@@ -152,31 +155,69 @@
 ```
 
 **Response Fail Body :**
-- 4xx :
+
+- 403 : Forbidden
+
 ```json
-{}
+{
+  "status": "fail",
+  "message": "You don't have an access to add articles"
+}
 ```
 
 ---
 
 ## Update Article API
 
-**Endpoint :** GET /api/articles/:id
+**Endpoint :** PATCH /api/articles/:id
 
 **Request Body :**
+
 ```json
-{}
+{
+  "title": "Manfaat Jamu untuk Kesehatan",
+  "tags": ["Kesehatan", "Manfaat", "Batuk", ...another tag],
+  "contents": [
+    {
+      "subtitle": "",
+      "paragraph": ["Isi paragraf 1", "Isi paragraf 2", "Isi paragraf 3", ...another paragraph]
+    },
+    {
+      "subtitle": "5 Manfaat",
+      "paragraph": ["Isi paragraf 1", "Isi paragraf 2", "Isi paragraf 3", ...another paragraph]
+    },
+    {
+      "subtitle": "",
+      "paragraph": ["Isi paragraf 1", "Isi paragraf 2", "Isi paragraf 3", ...another paragraph]
+    },
+    {
+      ...another content
+    }
+  ],
+  "updatedAt": "18 October 2024"
+}
 ```
 
 **Response Success Body :**
+
+- 200 : OK
+
 ```json
-{}
+{
+  "status": "success",
+  "message": "Article updated successfully"
+}
 ```
 
 **Response Fail Body :**
-- 4xx :
+
+- 403 : Forbidden
+
 ```json
-{}
+{
+  "status": "fail",
+  "message": "You don't have an access to update articles"
+}
 ```
 
 ---
@@ -185,20 +226,45 @@
 
 **Endpoint :** GET /api/articles/:id
 
+**Headers :**
+- Authorization : token
+
 **Request Body :**
 ```json
-{}
+{
+  "id": 1
+}
 ```
 
 **Response Success Body :**
+
+- 200 : OK
+
 ```json
-{}
+{
+  "status": "success",
+  "message": "Article deleted successfully"
+}
 ```
 
 **Response Fail Body :**
-- 4xx :
+
+- 403 : Forbidden
+
 ```json
-{}
+{
+  "status": "fail",
+  "message": "You don't have an access to delete articles"
+}
+```
+
+- 404 : Not Found
+
+```json
+{
+  "status": "fail",
+  "message": "Article not found"
+}
 ```
 
 ---

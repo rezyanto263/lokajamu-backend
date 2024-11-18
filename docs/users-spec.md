@@ -11,6 +11,8 @@
 
 **Response Success Body :**
 
+- 200 : OK
+
 ```json
 {
   "status": "success",
@@ -37,7 +39,7 @@
 
 ## Update User API
 
-**Endpoint :** PUT /api/users/:id
+**Endpoint :** PATCH /api/users/:id
 
 **Headers :**
 
@@ -57,10 +59,12 @@
 
 **Response Success Body :**
 
+- 200 : OK
+
 ```json
 {
   "status": "success",
-  "message": "Account updated successfully"
+  "message": "Account updated successfully",
   "data": {
     "userId": 1
   }
@@ -92,10 +96,6 @@
 ## Login User API
 
 **Endpoint :** POST /api/users/login
-
-**Headers :**
-
-- Authorization : token
 
 **Request Body :**
 
@@ -166,6 +166,8 @@
 
 **Response Success Body :**
 
+- 201 : Created
+
 ```json
 {
   "status": "success",
@@ -198,11 +200,133 @@
 
 ---
 
+## Forgot Password User API
+
+**Endpoint :** PATCH /api/users/forgot-password
+
+**Request Body :**
+
+```json
+{
+  "email": "example@gmail.com"
+}
+```
+
+**Response Succes Body :**
+
+- 200 : OK
+
+```json
+{
+  "status": "success",
+  "message": "Reset password token has been sent to the email"
+}
+```
+
+**Response Fail Body :**
+
+
+- 400 : Bad Request
+
+```json
+{
+  "status": "fail",
+  "message": "Data not valid"
+}
+```
+
+- 404 : Not Found
+
+```json
+{
+  "status": "fail",
+  "message": "Account not found"
+}
+```
+
+---
+
+## Verify Reset Token User API
+
+**Endpoint :** PATCH /api/users/verify-reset-token
+
+**Request Body :**
+
+```json
+{
+  "email": "example@gmail.com",
+  "resetCode": 401947,
+}
+```
+
+**Response Success Body :**
+
+- 200 : OK
+
+```json
+{
+  "status": "success",
+  "message": "Reset token verified"
+}
+```
+
+**Response Fail Body :**
+
+- 401 : Unauthorized
+
+```json
+{
+  "status": "fail",
+  "message": "Invalid token code, please provide a valid token"
+}
+```
+
+---
+
+## Reset Password API
+
+**Endpoint :** PATCH /api/users
+
+**Request Body**
+
+```json
+{
+  "email": "example@gmail.com",
+  "newPassword": "new-secret-password",
+  "newPasswordConfirmation": "new-secret-password"
+}
+```
+**Response Success Body :**
+
+- 200 : OK
+
+```json
+{
+  "status": "success",
+  "message": "Password updated successfully"
+}
+```
+
+**Response Fail Body :**
+
+- 400 : Bad Request
+
+```json
+{
+  "status": "fail",
+  "message": "Password not valid"
+}
+```
+
+---
+
 ## Logout User API
 
 **Endpoint :** DELETE /api/users/:id
 
 **Response Success Body :**
+
+- 200 : OK
 
 ```json
 {
