@@ -78,7 +78,16 @@
 ```json
 {
   "status": "fail",
-  "message": "Data not valid"
+  "message": "Data not valid",
+  "errors": [
+    {
+      "field": "email",
+      "message": "Email not valid"
+    },
+    {
+      ...another error
+    }
+  ]
 }
 ```
 
@@ -124,7 +133,16 @@
 ```json
 {
   "status": "fail",
-  "message": "Data not valid"
+  "message": "Data not valid",
+  "errors": [
+    {
+      "field": "email",
+      "message": "Email not valid"
+    },
+    {
+      ...another error
+    }
+  ]
 }
 ```
 
@@ -133,16 +151,7 @@
 ```json
 {
   "status": "fail",
-  "message": "Wrong Password"
-}
-```
-
-- 404 : Not Found
-
-```json
-{
-  "status": "fail",
-  "message": "Account not found"
+  "message": "Wrong Email or Password"
 }
 ```
 
@@ -185,7 +194,16 @@
 ```json
 {
   "status": "fail",
-  "message": "Data not valid"
+  "message": "Data not valid",
+  "errors": [
+    {
+      "field": "email",
+      "message": "Email not valid"
+    },
+    {
+      ...another error
+    }
+  ]
 }
 ```
 
@@ -231,7 +249,16 @@
 ```json
 {
   "status": "fail",
-  "message": "Data not valid"
+  "message": "Data not valid",
+  "errors": [
+    {
+      "field": "email",
+      "message": "Email not valid"
+    },
+    {
+      ...another error
+    }
+  ]
 }
 ```
 
@@ -314,7 +341,16 @@
 ```json
 {
   "status": "fail",
-  "message": "Password not valid"
+  "message": "Password not valid",
+  "errors": [
+    {
+      "field": "password",
+      "message": "password at least minimum 8 characters"
+    },
+    {
+      ...another error
+    }
+  ]
 }
 ```
 

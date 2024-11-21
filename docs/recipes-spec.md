@@ -174,6 +174,21 @@
 
 **Response Fail Body :**
 
+- 400 : Bad Request
+
+```json
+{
+  "status": "fail",
+  "message": "Data not valid",
+  "errors": [
+    {
+      "field": "imageUrl",
+      "message": "Image required"
+    }
+  ]
+}
+```
+
 - 403 : Forbiddden
 
 ```json
@@ -258,7 +273,13 @@
 ```json
 {
   "status": "fail",
-  "message": "Data not valid"
+  "message": "Data not valid",
+  "errors": [
+    {
+      "field": "imageUrl",
+      "message": "Image required"
+    }
+  ]
 }
 ```
 
@@ -268,6 +289,15 @@
 {
   "status": "fail",
   "message": "You don't have an access to edit recipes"
+}
+```
+
+- 409 : Conflict
+
+```json
+{
+  "status": "fail",
+  "message": "Recipe already been made"
 }
 ```
 
