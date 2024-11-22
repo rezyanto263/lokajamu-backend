@@ -16,9 +16,10 @@
       "id": 1,
       "title": "Manfaat Jamu untuk Kesehatan",
       "tags": ["Kesehatan", "Manfaat", "Batuk", ...another tag],
+      "imageUrl": "https://storage.googleapis.com/lokajamu-bucket/articleImage.png",
       "contents": [
         {
-          "subtitle": "",
+          "subtitle": "Rempah Pada Jamu",
           "paragraph": ["Isi paragraf 1", "Isi paragraf 2", "Isi paragraf 3", ...another paragraph]
         },
         {
@@ -72,6 +73,7 @@
         "id": 1,
         "title": "Manfaat Jamu untuk Kesehatan",
         "tags": ["Kesehatan", "Manfaat", "Batuk", ...another tag],
+        "imageUrl": "https://storage.googleapis.com/lokajamu-bucket/articleImage.png",
         "contents": [
           {
             "subtitle": "",
@@ -114,24 +116,25 @@
 
 ## Add Article API
 
-**Endpoint :** GET /api/articles
+**Endpoint :** POST /api/articles
 
 **Request Body :**
 ```json
 {
   "title": "Manfaat Jamu untuk Kesehatan",
   "tags": ["Kesehatan", "Manfaat", "Batuk", ...another tag],
+  "imageUrl": "https://storage.googleapis.com/lokajamu-bucket/articleImage.png",
   "contents": [
     {
       "subtitle": "",
       "paragraph": ["Isi paragraf 1", "Isi paragraf 2", "Isi paragraf 3", ...another paragraph]
     },
     {
-      "subtitle": "5 Manfaat",
+      "subtitle": "Subtitle 1",
       "paragraph": ["Isi paragraf 1", "Isi paragraf 2", "Isi paragraf 3", ...another paragraph]
     },
     {
-      "subtitle": "",
+      "subtitle": "Subtitle 2",
       "paragraph": ["Isi paragraf 1", "Isi paragraf 2", "Isi paragraf 3", ...another paragraph]
     },
     {
@@ -156,12 +159,39 @@
 
 **Response Fail Body :**
 
+- 400 : Bad Request
+
+```json
+{
+  "status": "fail",
+  "message": "Data not valid",
+  "errors": [
+    {
+      "field": "title",
+      "message": "Article title already exist"
+    },
+    {
+      ...another error
+    }
+  ]
+}
+```
+
 - 403 : Forbidden
 
 ```json
 {
   "status": "fail",
   "message": "You don't have an access to add articles"
+}
+```
+
+- 409 : Conflict
+
+```json
+{
+  "status": "fail",
+  "message": "Article title already exist"
 }
 ```
 
@@ -177,6 +207,7 @@
 {
   "title": "Manfaat Jamu untuk Kesehatan",
   "tags": ["Kesehatan", "Manfaat", "Batuk", ...another tag],
+  "imageUrl": "https://storage.googleapis.com/lokajamu-bucket/articleImage.png",
   "contents": [
     {
       "subtitle": "",
@@ -211,12 +242,48 @@
 
 **Response Fail Body :**
 
+- 400 : Bad Request
+
+```json
+{
+  "status": "fail",
+  "message": "Data not valid",
+  "errors": [
+    {
+      "field": "title",
+      "message": "Article title already exist"
+    },
+    {
+      ...another error
+    }
+  ]
+}
+```
+
 - 403 : Forbidden
 
 ```json
 {
   "status": "fail",
   "message": "You don't have an access to update articles"
+}
+```
+
+- 404 : Not Found
+
+```json
+{
+  "status": "fail",
+  "message": "Article not found"
+}
+```
+
+- 409 : Conflict
+
+```json
+{
+  "status": "fail",
+  "message": "Article title already exist"
 }
 ```
 

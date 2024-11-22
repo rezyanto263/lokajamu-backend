@@ -254,9 +254,6 @@
     {
       "field": "email",
       "message": "Email not valid"
-    },
-    {
-      ...another error
     }
   ]
 }

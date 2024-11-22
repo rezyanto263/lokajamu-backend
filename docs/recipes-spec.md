@@ -189,7 +189,7 @@
 }
 ```
 
-- 403 : Forbiddden
+- 403 : Forbidden
 
 ```json
 {
@@ -203,7 +203,7 @@
 ```json
 {
   "status": "fail",
-  "message": "Recipe already been made"
+  "message": "Recipe name already been made"
 }
 ```
 
@@ -292,12 +292,21 @@
 }
 ```
 
+- 404 : Not Found
+
+```json
+{
+  "status": "fail",
+  "message": "Recipe not found"
+}
+```
+
 - 409 : Conflict
 
 ```json
 {
   "status": "fail",
-  "message": "Recipe already been made"
+  "message": "Recipe name already been made"
 }
 ```
 
