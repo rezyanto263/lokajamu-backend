@@ -4,10 +4,10 @@
 
 ## Get User Details API
 
-**Endpoint :** GET /api/users/:id
+**Endpoint :** GET /api/users/current
 
 **Headers :**
-- Authorization : token
+- Authorization : Bearer Token
 
 **Response Success Body :**
 
@@ -19,7 +19,9 @@
   "data": {
     "firstName": "Reza",
     "lastName": "Haryanto",
-    "email": "example@gmail.com"
+    "email": "example@gmail.com",
+    "createdAt": "26-11-2024 19:50:47",
+    "updatedAt": "26-11-2024 20:23:01"
   }
 }
 ```
@@ -39,21 +41,19 @@
 
 ## Update User API
 
-**Endpoint :** PATCH /api/users/:id
+**Endpoint :** PATCH /api/users/current
 
 **Headers :**
 
-- Authorization : token
+- Authorization : Bearer Token
 
 **Request Body :**
 
 ```json
 {
   "firstName": "Reza",
-  "lastName": "Haryanto V2",
+  "lastName": "Haryanto V2", // optional
   "email": "example2@gmail.com",
-  "password": "new-secret-password",
-  "updatedAt": "17 November 2024"
 }
 ```
 
@@ -65,9 +65,6 @@
 {
   "status": "success",
   "message": "Account updated successfully",
-  "data": {
-    "userId": 1
-  }
 }
 ```
 
@@ -121,7 +118,7 @@
 {
   "status": "success",
   "data": {
-    "token": "unique-token"
+    "token": "unique-jwt-token"
   }
 }
 ```
@@ -159,14 +156,14 @@
 
 ## Register User API
 
-**Endpoint :** POST /api/users
+**Endpoint :** POST /api/users/register
 
 **Request Body :**
 
 ```json
 {
   "firstName": "Reza",
-  "lastName": "Haryanto",
+  "lastName": "Haryanto", // optional
   "email": "example@gmail.com",
   "password": "secret-password",
   "passwordConfirmation": "secret-password"
@@ -181,9 +178,6 @@
 {
   "status": "success",
   "message": "Account registered successfully",
-  "data": {
-    "userId": 1
-  }
 }
 ```
 
@@ -220,7 +214,7 @@
 
 ## Forgot Password User API
 
-**Endpoint :** PATCH /api/users/forgot-password
+**Endpoint :** POST /api/users/forgotpassword
 
 **Request Body :**
 
@@ -237,7 +231,10 @@
 ```json
 {
   "status": "success",
-  "message": "Reset password token has been sent to the email"
+  "message": "Reset password token has been sent to the email",
+  "data": {
+    "resetTokenExpire": "26-11-2024 20:23:01"
+  }
 }
 ```
 
@@ -272,14 +269,14 @@
 
 ## Verify Reset Token User API
 
-**Endpoint :** PATCH /api/users/verify-reset-token
+**Endpoint :** POST /api/users/resettoken
 
 **Request Body :**
 
 ```json
 {
+  "resetToken": 401947,
   "email": "example@gmail.com",
-  "resetCode": 401947,
 }
 ```
 
@@ -290,7 +287,10 @@
 ```json
 {
   "status": "success",
-  "message": "Reset token verified"
+  "message": "The reset token has been verified",
+  "data": {
+      "token": "unique-jwt-token"
+  }
 }
 ```
 
@@ -307,17 +307,16 @@
 
 ---
 
-## Reset Password API
+## Change Password API
 
-**Endpoint :** PATCH /api/users
+**Endpoint :** PATCH /api/users/changepassword
 
 **Request Body**
 
 ```json
 {
-  "email": "example@gmail.com",
-  "newPassword": "new-secret-password",
-  "newPasswordConfirmation": "new-secret-password"
+  "password": "new-secret-password",
+  "passwordConfirmation": "new-secret-password"
 }
 ```
 **Response Success Body :**
@@ -342,40 +341,12 @@
   "errors": [
     {
       "field": "password",
-      "message": "password at least minimum 8 characters"
+      "message": "Password must contain one uppercase letter, one lowercase letter, and one number."
     },
     {
       ...another error
     }
   ]
-}
-```
-
----
-
-## Logout User API
-
-**Endpoint :** DELETE /api/users/:id
-
-**Response Success Body :**
-
-- 200 : OK
-
-```json
-{
-  "status": "success",
-  "message": "Logout Success"
-}
-```
-
-**Response Fail Body :**
-
-- 401 : Unauthorized
-
-```json
-{
-  "status": "fail",
-  "message": "Unauthorized"
 }
 ```
 

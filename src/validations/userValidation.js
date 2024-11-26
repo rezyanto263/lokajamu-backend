@@ -21,8 +21,7 @@ const registerUserValidation = [
 
         return value;
       } catch (err) {
-        console.error(`Database error occured : ${err.message}`);
-        throw new Error('Database error occured');
+        throw new Error(err.message);
       }
     }),
 
@@ -69,9 +68,9 @@ const registerUserValidation = [
         message: 'Data not valid',
         errors: errorMessages
       });
+    } else {
+      next();
     }
-
-    next();
   }
 ];
 
@@ -99,9 +98,9 @@ const loginUserValidation = [
         message: 'Data not valid',
         errors: errorMessages
       });
+    } else {
+      next();
     }
-
-    next();
   }
 ];
 
@@ -127,13 +126,11 @@ const editUserValidation = [
 
         return value;
       } catch (err) {
-        console.error(`Database error occured : ${err.message}`);
-        throw new Error('Database error occured');
+        throw new Error(err.message);
       }
     }),
 
-  body('password')
-    .notEmpty().withMessage('Password required')
+  body('password').optional()
     .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('Password must contain one uppercase letter, one lowercase letter, and one number.'),
 
@@ -166,9 +163,9 @@ const editUserValidation = [
         message: 'Data not valid',
         errors: errorMessages
       });
+    } else {
+      next();
     }
-
-    next();
   }
 ];
 
@@ -185,14 +182,15 @@ const forgotPasswordValidation = [
         status: 'fail',
         message: 'This email not valid',
       });
+    } else {
+      next();
     }
 
-    next();
   }
 ];
 
 const resetCodeValidation = [
-  body('code')
+  body('resetToken')
     .notEmpty().withMessage('Reset code required')
     .isNumeric().withMessage('Please provide a reset code'),
 
@@ -204,9 +202,9 @@ const resetCodeValidation = [
         status: 'fail',
         message: 'This reset code not valid',
       });
+    } else {
+      next();
     }
-
-    next();
   }
 ];
 
@@ -240,9 +238,9 @@ const changePasswordValidation = [
         message: 'Data not valid',
         errors: errorMessages
       });
+    } else {
+      next();
     }
-
-    next();
   }
 ];
 

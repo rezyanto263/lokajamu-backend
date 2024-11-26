@@ -1,14 +1,15 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
 const generateToken = require('../config/jwt');
-const transporter = require('../services/emailService');
 const moment = require('moment');
+const crypto = require('crypto');
+const sendEmail = require('../services/emailService');
 
 const register = async (req, res) => {
   try {
     const { firstName, lastName = null, email, password } = req.body;
 
-    const hashedPassword = await bcrypt.hash(password, '10');
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const [results] = await User.add({ firstName, lastName, email, hashedPassword });
 
@@ -24,11 +25,11 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     const [results] = await User.getByEmail(email);
 
-    if (!results[0]) return res.status(401).json({ status: 'fail', message: 'Wrong email or password!' });
+    if (results.length === 0) return res.status(401).json({ status: 'fail', message: 'Wrong email or password!' });
 
     const isPasswordValid = bcrypt.compareSync(password, results[0].password);
 
-    if (!isPasswordValid) return res.json(401).json({ status: 'fail', message: 'Wrong email or password!' });
+    if (!isPasswordValid) return res.status(401).json({ status: 'fail', message: 'Wrong email or password!' });
 
     const token = generateToken(results[0].id, '1h');
 
@@ -47,7 +48,7 @@ const getUserDetails = async (req, res) => {
     const id = req.userId;
     const [results] = await User.getById(id);
 
-    if (!results[0]) return res.status(404).json({ status: 'fail', message: 'Account not found!' });
+    if (results.length === 0) return res.status(404).json({ status: 'fail', message: 'Account not found!' });
 
     const { firstName, lastName, email, createdAt, updatedAt } = results[0];
 
@@ -57,8 +58,8 @@ const getUserDetails = async (req, res) => {
         firstName: firstName,
         lastName: lastName,
         email: email,
-        createdAt: createdAt,
-        updatedAt: updatedAt
+        createdAt: moment(createdAt).format('DD-MM-YYYY HH:mm:ss'),
+        updatedAt: moment(updatedAt).format('DD-MM-YYYY HH:mm:ss')
       }
     });
   } catch (err) {
@@ -70,9 +71,12 @@ const getUserDetails = async (req, res) => {
 const editUser = async (req, res) => {
   try {
     const id = req.userId;
-    const [results] = await User.edit(req.body, id);
 
-    if (!results[0]) return res.status(401).json({ status: 'fail', message: 'Unauthorized!' });
+    const { firstName, lastName, email } = req.body;
+
+    const [editResults] = await User.edit(firstName, (lastName === '' ? null : lastName), email, id);
+
+    if (editResults.affectedRows === 0) return res.status(401).json({ status: 'fail', message: 'Unauthorized!' });
 
     res.json({
       status: 'success',
@@ -92,24 +96,29 @@ const forgotPassword = async (req, res) => {
 
     if (!isUserExist) return res.status(401).json({ status: 'fail', message: 'Unauthorized!' });
 
-    const resetCode = crypto.randomInt(100000, 999999);
+    const resetToken = crypto.randomInt(100000, 999999);
 
     const mailOptions = {
-      from: process.env.GMAIL_USER,
+      from: `Loka Jamu App<${process.env.GMAIL_USER}>`,
       to: email,
       subject: 'Reset your Loka Jamu account password',
-      text: `RESET CODE: ${resetCode}`,
+      text: `RESET TOKEN: ${resetToken}`,
     };
 
-    const result = await transporter.sendMail(mailOptions);
+    const result = await sendEmail(mailOptions);
+
+    const resetTokenExpire = moment().add(10, 'minutes').format('YYYY-MM-DD HH:mm:ss');
 
     if (result) {
-      await User.addResetCode(email, resetCode, moment().add(10, 'minutes').format('DD-MM-YYYY HH:mm:ss'));
+      await User.addResetToken(email, resetToken, resetTokenExpire);
     }
 
     res.json({
       status: 'success',
-      message: 'The reset code has sent to the email!'
+      message: 'The reset token has sent to the email!',
+      data: {
+        resetTokenExpire: moment(resetTokenExpire).format('DD-MM-YYYY HH:mm:ss')
+      }
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
@@ -117,20 +126,21 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-const verifyResetCode = async (req, res) => {
+const verifyResetToken = async (req, res) => {
   try {
-    const [results] = await User.getResetCode(req.body.resetCode);
-    const { userId, code, expiresIn } = results[0];
+    const [results] = await User.getResetToken(req.body.email, req.body.resetToken);
+    const { id, resetToken, resetTokenExpire } = results[0];
 
-    if (!code) return res.status(401).json({ status: 'fail', message: 'Unauthorized!' });
+    if (!resetToken) return res.status(401).json({ status: 'fail', message: 'Unauthorized!' });
 
-    const dateTimeNow = moment().format('DD-MM-YYYY HH:mm:ss');
+    const dateTimeNow = moment();
+    const expireTime = moment(resetTokenExpire);
 
-    if (dateTimeNow.isBefore(expiresIn)) {
-      const token = generateToken(userId, '15m');
+    if (dateTimeNow.isBefore(expireTime)) {
+      const token = generateToken(id, '15m');
       res.json({
         status: 'success',
-        message: 'The reset code has been verified',
+        message: 'The reset token has been verified',
         data: {
           token: token
         }
@@ -140,7 +150,7 @@ const verifyResetCode = async (req, res) => {
     }
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    res.status(500).json({ status: 'fail', message: 'Verify reset code failed!' });
+    res.status(500).json({ status: 'fail', message: 'Verify reset token failed!' });
   }
 };
 
@@ -148,7 +158,7 @@ const changePassword = async (req, res) => {
   try {
     const { password } = req.body;
 
-    const hashedPassword = bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     await User.changePassword(req.userId, hashedPassword);
 
@@ -168,6 +178,6 @@ module.exports = {
   getUserDetails,
   editUser,
   forgotPassword,
-  verifyResetCode,
+  verifyResetToken,
   changePassword,
 };
