@@ -311,6 +311,10 @@
 
 **Endpoint :** PATCH /api/users/changepassword
 
+**Headers :**
+
+- Authorization : Bearer Token
+
 **Request Body**
 
 ```json
