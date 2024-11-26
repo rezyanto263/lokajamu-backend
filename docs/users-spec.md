@@ -166,7 +166,7 @@
   "lastName": "Haryanto", // optional
   "email": "example@gmail.com",
   "password": "secret-password",
-  "passwordConfirmation": "secret-password"
+  "confirmPassword": "secret-password"
 }
 ```
 
@@ -316,7 +316,7 @@
 ```json
 {
   "password": "new-secret-password",
-  "passwordConfirmation": "new-secret-password"
+  "confirmPassword": "new-secret-password"
 }
 ```
 **Response Success Body :**
