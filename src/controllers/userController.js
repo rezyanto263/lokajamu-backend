@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
 const generateToken = require('../config/jwt');
-const moment = require('moment');
+const moment = require('moment-timezone');
 const crypto = require('crypto');
 const sendEmail = require('../services/emailService');
 
@@ -107,7 +107,7 @@ const forgotPassword = async (req, res) => {
 
     const result = await sendEmail(mailOptions);
 
-    const resetTokenExpire = moment().add(10, 'minutes').format('YYYY-MM-DD HH:mm:ss');
+    const resetTokenExpire = moment().tz('Asia/Jakarta').add(10, 'minutes').format('YYYY-MM-DD HH:mm:ss');
 
     if (result) {
       await User.addResetToken(email, resetToken, resetTokenExpire);
