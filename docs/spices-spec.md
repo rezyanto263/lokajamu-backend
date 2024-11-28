@@ -13,6 +13,8 @@
   "status": "success",
   "data": {
     "name": "Jahe Merah",
+    "tags": ["Tag 1", "Tag 2", "Tag 3", ...another tag],
+    "imageUrl": "https://storage.googleapis.com/lokajamu-bucket/jahe-merah.png",
     "decription": "Jahe merah adalah tanaman rimpang yang memiliki kulit luar berwarna merah tua dan daging berwarna merah muda kecokelatan. Jahe merah memiliki aroma yang kuat dan rasa yang lebih manis daripada jahe biasa.",
     "benefits": ["Manfaat 1", "Manfaat 2", "Manfaat 3", ...another benefits],
     "jamuList": ["Wedang Jahe Merah", "Jahe Merah Madu", ...another jamu]
@@ -84,9 +86,8 @@
 {
   "name": "Jahe Merah",
   "tags": ["Tag 1", "Tag 2", "Tag 3", ...another tag],
-  "imageUrl": "https://storage.googleapis.com/lokajamu-bucket/jahe-merah.png",
   "description": "Jahe merah adalah tanaman rimpang yang memiliki kulit luar berwarna merah tua dan daging berwarna merah muda kecokelatan. Jahe merah memiliki aroma yang kuat dan rasa yang lebih manis daripada jahe biasa.",
-  "benefits": ["Manfaat 1", "Manfaat 2", "Manfaat 3", ...another benefits],
+  "benefits": "Jahe merah dapat membantu mengeluarkan racun, termasuk kolesterol jahat, dari tubuh.",
   "jamuList": ["Wedang Jahe Merah", "Jahe Merah Madu", ...another jamu]
 }
 ```
@@ -138,7 +139,7 @@
 
 ## Update Spice API
 
-**Endpoint :** PATCH /api/spices/:id
+**Endpoint :** PUT /api/spices/:id
 
 **Headers :**
 
@@ -150,9 +151,8 @@
 {
   "name": "Jahu Merah",
   "tags": ["Tag 1", ...another tag],
-  "imageUrl": "https://storage.googleapis.com/lokajamu-bucket/jahe-merah.png",
   "description": "Jahe merah adalah tanaman rimpang yang memiliki kulit luar berwarna merah tua dan daging berwarna merah muda kecokelatan.",
-  "benefits": ["Manfaat 1", "Manfaat 2", ...another benefits],
+  "benefits": "Jahe merah dapat membantu mengeluarkan racun, termasuk kolesterol jahat, dari tubuh.",
   "jamuList": ["Wedang Jahe Merah", "Jahe Merah Madu", ...another jamu]
 }
 ```
