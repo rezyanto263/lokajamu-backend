@@ -4,7 +4,7 @@ const { addSpice, editSpice, getSpiceDetails, searchAllSpices, deleteSpice } = r
 const { addSpiceValidation, editSpiceValidation } = require('../validations/spiceValidation');
 
 const router = express.Router();
-const upload = multer({ dest: 'uploads/', limits: { fileSize: 1024 * 1024 * 10 } });
+const upload = multer({ dest: '/tmp/uploads', limits: { fileSize: 1024 * 1024 * 10 } });
 
 router.get('/', searchAllSpices);
 router.get('/:id', getSpiceDetails);
