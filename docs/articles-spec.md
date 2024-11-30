@@ -119,30 +119,24 @@
 **Endpoint :** POST /api/articles
 
 **Request Body :**
-```json
-{
-  "title": "Manfaat Jamu untuk Kesehatan",
-  "tags": ["Kesehatan", "Manfaat", "Batuk", ...another tag],
-  "imageUrl": "https://storage.googleapis.com/lokajamu-bucket/articleImage.png",
-  "contents": [
-    {
-      "subtitle": "",
-      "paragraph": ["Isi paragraf 1", "Isi paragraf 2", "Isi paragraf 3", ...another paragraph]
-    },
-    {
-      "subtitle": "Subtitle 1",
-      "paragraph": ["Isi paragraf 1", "Isi paragraf 2", "Isi paragraf 3", ...another paragraph]
-    },
-    {
-      "subtitle": "Subtitle 2",
-      "paragraph": ["Isi paragraf 1", "Isi paragraf 2", "Isi paragraf 3", ...another paragraph]
-    },
-    {
-      ...another content
-    }
-  ],
-}
-```
+
+- Content-Type : multipart/form-data
+
+| Key                    | Value                                      |
+|------------------------|--------------------------------------------|
+| `title`                | Manfaat Jamu untuk Kesehatan               |
+| `tags[0]`              | Kesehatan                                  |
+| `tags[1]`              | Manfaat                                    |
+| `tags[2]`              | Batuk                                      |
+| `tags[n]`              | ...another tag                             |
+| `image`                | article-image.png                          |
+| `contents[0][type]`    | subtitle                                   |
+| `contents[0][text]`    | 5 Manfaat Jamu bagi Kesehatan              |
+| `contents[1][type]`    | paragraph                                  |
+| `contents[1][text]`    | Isi paragraph 1                            |
+| `contents[2][type]`    | paragraph                                  |
+| `contents[2][text]`    | Isi paragraph 2                            |
+| `contents[n][...]`     | ...another content                         |
 
 **Response Success Body :**
 
@@ -199,35 +193,27 @@
 
 ## Update Article API
 
-**Endpoint :** PATCH /api/articles/:id
+**Endpoint :** PUT /api/articles/:id
 
 **Request Body :**
 
-```json
-{
-  "title": "Manfaat Jamu untuk Kesehatan",
-  "tags": ["Kesehatan", "Manfaat", "Batuk", ...another tag],
-  "imageUrl": "https://storage.googleapis.com/lokajamu-bucket/articleImage.png",
-  "contents": [
-    {
-      "subtitle": "",
-      "paragraph": ["Isi paragraf 1", "Isi paragraf 2", "Isi paragraf 3", ...another paragraph]
-    },
-    {
-      "subtitle": "5 Manfaat",
-      "paragraph": ["Isi paragraf 1", "Isi paragraf 2", "Isi paragraf 3", ...another paragraph]
-    },
-    {
-      "subtitle": "",
-      "paragraph": ["Isi paragraf 1", "Isi paragraf 2", "Isi paragraf 3", ...another paragraph]
-    },
-    {
-      ...another content
-    }
-  ],
-  "updatedAt": "18 October 2024"
-}
-```
+- Content-Type : multipart/form-data
+
+| Key                    | Value                                      |
+|------------------------|--------------------------------------------|
+| `title`                | Manfaat Jamu untuk Kesehatan               |
+| `tags[0]`              | Kesehatan                                  |
+| `tags[1]`              | Manfaat                                    |
+| `tags[2]`              | Batuk                                      |
+| `tags[n]`              | ...another tag                             |
+| `image`                | article-image.png                          |
+| `contents[0][type]`    | subtitle                                   |
+| `contents[0][text]`    | 5 Manfaat Jamu bagi Kesehatan              |
+| `contents[1][type]`    | paragraph                                  |
+| `contents[1][text]`    | Isi paragraph 1                            |
+| `contents[2][type]`    | paragraph                                  |
+| `contents[2][text]`    | Isi paragraph 2                            |
+| `contents[n][...]`     | ...another content                         |
 
 **Response Success Body :**
 

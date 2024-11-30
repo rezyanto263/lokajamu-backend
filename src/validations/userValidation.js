@@ -4,14 +4,17 @@ const User = require('../models/userModel');
 const registerUserValidation = [
   body('firstName')
     .notEmpty().withMessage('First name required')
-    .isString().withMessage('First name must be string'),
+    .isString().withMessage('First name must be string')
+    .isLength({ max: 50 }).withMessage('First name maximum 50 characters'),
 
   body('lastName').optional()
-    .isString().withMessage('Last name must be string'),
+    .isString().withMessage('Last name must be string')
+    .isLength({ max: 50 }).withMessage('Last name maximum 50 characters'),
 
   body('email')
     .notEmpty().withMessage('Email required')
     .isEmail().withMessage('Please provide a valid email')
+    .isLength({ max: 255 }).withMessage('Email maximum 255 characters')
     .custom(async (value) => {
       try {
         const [results] = await User.getByEmail(value);
@@ -25,19 +28,14 @@ const registerUserValidation = [
       }
     }),
 
-  body('password')
+  body('password').trim()
     .notEmpty().withMessage('Password required')
     .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('Password must contain one uppercase letter, one lowercase letter, and one number.'),
 
-  body('confirmPassword')
+  body('confirmPassword').trim()
     .notEmpty().withMessage('Confirm Password is required')
-    .custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error('Password confirmation does not match password');
-      }
-      return true;
-    }),
+    .custom((value, { req }) => value === req.body.password).withMessage('Passwords do not match.'),
 
   (req, res, next) => {
     const errors = validationResult(req);
@@ -77,9 +75,10 @@ const registerUserValidation = [
 const loginUserValidation = [
   body('email')
     .notEmpty().withMessage('Email required')
-    .isEmail().withMessage('Please provide a valid email'),
+    .isEmail().withMessage('Please provide a valid email')
+    .isLength({ max: 255 }).withMessage('Email maximum 255 characters'),
 
-  body('password')
+  body('password').trim()
     .notEmpty().withMessage('Password required')
     .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('Password must contain one uppercase letter, one lowercase letter, and one number.'),
@@ -107,14 +106,17 @@ const loginUserValidation = [
 const editUserValidation = [
   body('firstName')
     .notEmpty().withMessage('First name required')
-    .isString().withMessage('First name must be string'),
+    .isString().withMessage('First name must be a string')
+    .isLength({ max: 50 }).withMessage('First name maximum 50 characters'),
 
   body('lastName').optional()
-    .isString().withMessage('Last name must be string'),
+    .isString().withMessage('Last name must be string')
+    .isLength({ max: 50 }).withMessage('Last name maximum 50 characters'),
 
   body('email')
     .notEmpty().withMessage('Email required')
     .isEmail().withMessage('Please provide a valid email')
+    .isLength({ max: 255 }).withMessage('Email maximum 255 characters')
     .custom(async (value, { req }) => {
       try {
         const [results] = await User.getByEmail(value);
@@ -130,7 +132,7 @@ const editUserValidation = [
       }
     }),
 
-  body('password').optional()
+  body('password').optional().trim()
     .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('Password must contain one uppercase letter, one lowercase letter, and one number.'),
 
@@ -172,7 +174,8 @@ const editUserValidation = [
 const forgotPasswordValidation = [
   body('email')
     .notEmpty().withMessage('Email required')
-    .isEmail().withMessage('Please provide a valid email'),
+    .isEmail().withMessage('Please provide a valid email')
+    .isLength({ max: 255 }).withMessage('Email maximum 255 characters'),
 
   (req, res, next) => {
     const errors = validationResult(req);
@@ -192,7 +195,8 @@ const forgotPasswordValidation = [
 const resetCodeValidation = [
   body('resetToken')
     .notEmpty().withMessage('Reset code required')
-    .isNumeric().withMessage('Please provide a reset code'),
+    .isNumeric().withMessage('Please provide a reset code')
+    .isLength({ min: 6, max: 6 }).withMessage('Reset token must be 6 digit'),
 
   (req, res, next) => {
     const errors = validationResult(req);
@@ -209,20 +213,15 @@ const resetCodeValidation = [
 ];
 
 const changePasswordValidation = [
-  body('password')
+  body('password').trim()
     .notEmpty().withMessage('Password required')
     .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
     .withMessage('Password must contain one uppercase letter, one lowercase letter, and one number.'),
 
-  body('confirmPassword')
+  body('confirmPassword').trim()
     .notEmpty().withMessage('Confirm Password is required')
-    .custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error('Password confirmation does not match password');
-      }
-      return true;
-    }),
+    .custom((value, { req }) => value === req.body.password).withMessage('Passwords do not match.'),
 
   (req, res, next) => {
     const errors = validationResult(req);

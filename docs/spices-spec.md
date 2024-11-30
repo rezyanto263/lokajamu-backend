@@ -82,15 +82,22 @@
 
 **Request Body :**
 
-```json
-{
-  "name": "Jahe Merah",
-  "tags": ["Tag 1", "Tag 2", "Tag 3", ...another tag],
-  "description": "Jahe merah adalah tanaman rimpang yang memiliki kulit luar berwarna merah tua dan daging berwarna merah muda kecokelatan. Jahe merah memiliki aroma yang kuat dan rasa yang lebih manis daripada jahe biasa.",
-  "benefits": "Jahe merah dapat membantu mengeluarkan racun, termasuk kolesterol jahat, dari tubuh.",
-  "jamuList": ["Wedang Jahe Merah", "Jahe Merah Madu", ...another jamu]
-}
-```
+- Content-Type : multipart/form-data
+
+| Key           | Value                                                                                         |
+|---------------|-----------------------------------------------------------------------------------------------|
+| `name`        | Jahe Merah                                                                                    |
+| `tags[0]`     | Tag 1                                                                                         |
+| `tags[1]`     | Tag 2                                                                                         |
+| `tags[2]`     | Tag 3                                                                                         |
+| `tags[n]`     | ...another tag                                                                                |
+| `image`       | jahe-merah.png                                                                                |
+| `description` | Jahe merah adalah tanaman rimpang yang memiliki kulit luar berwarna merah tua dan daging berwarna merah muda kecokelatan. Jahe merah memiliki aroma yang kuat dan rasa yang lebih manis daripada jahe biasa.                                   |
+| `benefits`    | Jahe merah dapat membantu mengeluarkan racun, termasuk kolesterol jahat, dari tubuh.          |
+| `jamuList[0]` | Wedang Jahe Merah                                                                             |
+| `jamuList[1]` | Jahe Merah Madu                                                                               |
+| `jamuList[n]` | ...another jamu                                                                               |
+
 
 **Response Success Body :**
 
@@ -147,15 +154,21 @@
 
 **Request Body :**
 
-```json
-{
-  "name": "Jahu Merah",
-  "tags": ["Tag 1", ...another tag],
-  "description": "Jahe merah adalah tanaman rimpang yang memiliki kulit luar berwarna merah tua dan daging berwarna merah muda kecokelatan.",
-  "benefits": "Jahe merah dapat membantu mengeluarkan racun, termasuk kolesterol jahat, dari tubuh.",
-  "jamuList": ["Wedang Jahe Merah", "Jahe Merah Madu", ...another jamu]
-}
-```
+- Content-Type : multipart/form-data
+
+| Key           | Value                                                                                         |
+|---------------|-----------------------------------------------------------------------------------------------|
+| `name`        | Jahe Merah                                                                                    |
+| `tags[0]`     | Tag 1                                                                                         |
+| `tags[1]`     | Tag 2                                                                                         |
+| `tags[2]`     | Tag 3                                                                                         |
+| `tags[n]`     | ...another tag                                                                                |
+| `image`       | jahe-merah.png                                                                                |
+| `description` | Jahe merah adalah tanaman rimpang yang memiliki kulit luar berwarna merah tua dan daging berwarna merah muda kecokelatan. Jahe merah memiliki aroma yang kuat dan rasa yang lebih manis daripada jahe biasa.                                   |
+| `benefits`    | Jahe merah dapat membantu mengeluarkan racun, termasuk kolesterol jahat, dari tubuh.          |
+| `jamuList[0]` | Wedang Jahe Merah                                                                             |
+| `jamuList[1]` | Jahe Merah Madu                                                                               |
+| `jamuList[n]` | ...another jamu                                                                               |
 
 **Response Success Body :**
 
