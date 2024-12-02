@@ -88,15 +88,39 @@
         "id": 1,
         "name": "Jamu Kunyit Asam",
         "tags": ["Asam", "Kunyit", ...another tag],
+        "description": "Jamu yang terbuat dari kunyit, asam jawa, gula aren, garam, dan air. Jamu ini memiliki khasiat sebagai analgesik (pereda nyeri), antipiretik (mencegah dan menurunkan demam), dan anti inflamasi.",
         "imageUrl": "https://storage.googleapis.com/lokajamu/recipes/image.png",
+        "ingredients": [
+          {
+            "name": "Kunyit segar",
+            "quantity": "100 gram",
+            "notes": "Kupas dan cuci bersih, lalu parut atau blender"
+          },
+          {
+            ...another ingredient
+          }
+        ],
+        "steps": [
+          {
+            "stepNumber": 1,
+            "instruction": "Kupas kulit kunyit, lalu cuci bersih dan parut atau blender hingga halus."
+          },
+          {
+            ...another step
+          },
+        ],
         "prepTime": "10 menit",
         "cookTime": "30 menit",
         "totalTime": "40 menit",
         "servingSize": "4 cangkir",
+        "tips": [
+          "Jamu kunyit asam bisa disimpan dalam botol kaca di dalam kulkas selama 3-4 hari.",
+          "Jika tidak ada kunyit segar, gunakan 1-2 sendok makan kunyit bubuk."
+        ]
       },
       {
         ...another recipe
-      }
+      },
     ]
   }
 }
@@ -192,7 +216,7 @@
 ```json
 {
   "status": "fail",
-  "message": "Recipe name already been made"
+  "message": "This recipe name already exist"
 }
 ```
 
@@ -283,7 +307,7 @@
 ```json
 {
   "status": "fail",
-  "message": "Recipe name already been made"
+  "message": "This recipe name already exist"
 }
 ```
 

@@ -97,6 +97,15 @@
 }
 ```
 
+- 409 : Conflict
+
+```json
+{
+  "status": "fail",
+  "message": "Account already registered"
+}
+```
+
 ---
 
 ## Login User API

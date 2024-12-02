@@ -12,12 +12,15 @@
 {
   "status": "success",
   "data": {
-    "name": "Jahe Merah",
-    "tags": ["Tag 1", "Tag 2", "Tag 3", ...another tag],
-    "imageUrl": "https://storage.googleapis.com/lokajamu-bucket/jahe-merah.png",
-    "decription": "Jahe merah adalah tanaman rimpang yang memiliki kulit luar berwarna merah tua dan daging berwarna merah muda kecokelatan. Jahe merah memiliki aroma yang kuat dan rasa yang lebih manis daripada jahe biasa.",
-    "benefits": ["Manfaat 1", "Manfaat 2", "Manfaat 3", ...another benefits],
-    "jamuList": ["Wedang Jahe Merah", "Jahe Merah Madu", ...another jamu]
+    "spice": {
+      "id": 1,
+      "name": "Jahe Merah",
+      "tags": ["Tag 1", "Tag 2", "Tag 3", ...another tag],
+      "imageUrl": "https://storage.googleapis.com/lokajamu-bucket/jahe-merah.png",
+      "decription": "Jahe merah adalah tanaman rimpang yang memiliki kulit luar berwarna merah tua dan daging berwarna merah muda kecokelatan. Jahe merah memiliki aroma yang kuat dan rasa yang lebih manis daripada jahe biasa.",
+      "benefits": ["Manfaat 1", "Manfaat 2", "Manfaat 3", ...another benefits],
+      "jamuList": ["Wedang Jahe Merah", "Jahe Merah Madu", ...another jamu]
+    }
   }
 }
 ```
@@ -52,9 +55,20 @@
 {
   "status": "success",
   "data": {
-    "name": "Jahe Merah",
-    "tags": ["Tag 1", "Tag 2", "Tag 3", ...another tag],
-    "imageUrl": "https://storage.googleapis.com/lokajamu-bucket/jahe-merah.png",
+    "spices": [
+      {
+        "id": 1,
+        "name": "Jahe Merah",
+        "tags": ["Tag 1", "Tag 2", "Tag 3", ...another tag],
+        "imageUrl": "https://storage.googleapis.com/lokajamu-bucket/jahe-merah.png",
+        "decription": "Jahe merah adalah tanaman rimpang yang memiliki kulit luar berwarna merah tua dan daging berwarna merah muda kecokelatan. Jahe merah memiliki aroma yang kuat dan rasa yang lebih manis daripada jahe biasa.",
+        "benefits": ["Manfaat 1", "Manfaat 2", "Manfaat 3", ...another benefits],
+        "jamuList": ["Wedang Jahe Merah", "Jahe Merah Madu", ...another jamu]
+      },
+      {
+        ...another spices
+      }
+    ]
   }
 }
 ```
