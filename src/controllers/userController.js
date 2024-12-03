@@ -64,7 +64,7 @@ const getUserDetails = async (req, res) => {
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    return res.status(500).json({ status: 'fail', message: 'Get account failed!' });
+    return res.status(500).json({ status: 'error', message: 'Get account failed!' });
   }
 };
 
@@ -84,7 +84,7 @@ const editUser = async (req, res) => {
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    return res.status(500).json({ status: 'fail', message: 'Edit account failed!' });
+    return res.status(500).json({ status: 'error', message: 'Edit account failed!' });
   }
 };
 
@@ -122,7 +122,7 @@ const forgotPassword = async (req, res) => {
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    return res.status(500).json({ status: 'fail', message: 'Forgot password failed!' });
+    return res.status(500).json({ status: 'error', message: 'Forgot password failed!' });
   }
 };
 
@@ -148,7 +148,7 @@ const verifyResetToken = async (req, res) => {
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    return res.status(500).json({ status: 'fail', message: 'Verify reset token failed!' });
+    return res.status(500).json({ status: 'error', message: 'Verify reset token failed!' });
   }
 };
 
@@ -166,7 +166,7 @@ const changePassword = async (req, res) => {
     });
   } catch (err) {
     console.error(err.message);
-    return res.status(500).json({ status: 'fail', message: 'Change password failed!' });
+    return res.status(500).json({ status: 'error', message: 'Change password failed!' });
   }
 };
 

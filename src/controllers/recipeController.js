@@ -25,7 +25,7 @@ const getRecipeById = async (req, res) => {
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    return res.status(500).json({ status: 'fail', message: 'Can not get recipe data' });
+    return res.status(500).json({ status: 'error', message: 'Can not get recipe data' });
   }
 };
 
@@ -44,7 +44,7 @@ const searchAllRecipes = async (req, res) => {
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    return res.status(500).json({ status: 'fail', message: 'Can not get recipes data' });
+    return res.status(500).json({ status: 'error', message: 'Can not get recipes data' });
   }
 };
 
@@ -87,12 +87,13 @@ const addRecipe = async (req, res) => {
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    return res.status(500).json({ status: 'fail', message: 'Can not add recipe data' });
+    return res.status(500).json({ status: 'error', message: 'Can not add recipe data' });
   }
 };
 
 const editRecipe = async (req, res) => {
   const recipeId = req.params.id;
+  const imageFile = req.file;
 
   try {
     const [recipeResults] = await Recipe.getById(recipeId);
@@ -103,7 +104,6 @@ const editRecipe = async (req, res) => {
       servingSize = recipe.servingSize, tips
     } = req.body;
     let { imageUrl = recipe.imageUrl } = req.body;
-    const imageFile = req.file;
 
     if (!imageFile) {
       await Recipe.edit(name, imageUrl, description, prepTime, cookTime, totalTime, servingSize, recipeId);
@@ -112,7 +112,7 @@ const editRecipe = async (req, res) => {
 
       const urlParts = new URL(imageUrl);
       const filePath = urlParts.pathname.replace(`/${bucket.name}/`, '');
-      await bucket.file(`${filePath}`).delete();
+      await bucket.file(filePath).delete();
 
       await bucket.upload(imageFile.path, {
         destination: `recipes/${fileName}`,
@@ -162,7 +162,14 @@ const deleteRecipe = async (req, res) => {
   const recipeId = req.params.id;
 
   try {
-    const [recipeResults] = await Recipe.delete(recipeId);
+    let [recipeResults] = await Recipe.getById(recipeId);
+    const imageUrl = recipeResults[0].imageUrl;
+
+    const urlParts = new URL(imageUrl);
+    const filePath = urlParts.pathname.replace(`/${bucket.name}/`, '');
+    await bucket.file(filePath).delete();
+
+    [recipeResults] = await Recipe.delete(recipeId);
 
     if (recipeResults.affectedRows === 0) return res.status(404).json({ status: 'fail', message: 'Recipe not found' });
 
@@ -172,7 +179,7 @@ const deleteRecipe = async (req, res) => {
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    return res.status(500).json({ status: 'fail', message: 'Can not delete recipe data' });
+    return res.status(500).json({ status: 'error', message: 'Can not delete recipe data' });
   }
 };
 

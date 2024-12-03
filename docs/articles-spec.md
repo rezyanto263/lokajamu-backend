@@ -17,24 +17,25 @@
       "title": "Manfaat Jamu untuk Kesehatan",
       "tags": ["Kesehatan", "Manfaat", "Batuk", ...another tag],
       "imageUrl": "https://storage.googleapis.com/lokajamu-bucket/articleImage.png",
-      "contents": [
+      "contents": [ // hanya terdapat type(subtitle dan text) dan text
         {
-          "subtitle": "Rempah Pada Jamu",
-          "paragraph": ["Isi paragraf 1", "Isi paragraf 2", "Isi paragraf 3", ...another paragraph]
+          "type": "paragraph",
+          "text": "Jamu, sebagai minuman herbal tradisional Indonesia, memiliki banyak manfaat bagi tubuh. Jamu biasanya terbuat dari bahan-bahan alami seperti kunyit, jahe, temulawak, kencur, daun sirih, dan rempah-rempah lainnya. Berikut beberapa manfaat utama jamu bagi kesehatan:"
         },
         {
-          "subtitle": "",
-          "paragraph": ["Isi paragraf 1", "Isi paragraf 2", "Isi paragraf 3", ...another paragraph]
+          "type": "subtitle",
+          "text": "1. Meningkatkan Sistem Imun"
         },
         {
-          "subtitle": "",
-          "paragraph": ["Isi paragraf 1", "Isi paragraf 2", "Isi paragraf 3", ...another paragraph]
+          "type": "paragraph",
+          "text": "Kandungan antioksidan dalam kunyit, jahe, dan temulawak membantu melawan radikal bebas serta meningkatkan daya tahan tubuh. Jahe memiliki sifat antiinflamasi yang dapat membantu tubuh melawan infeksi."
         },
         {
           ...another content
         }
       ],
-      "updatedAt": "Minggu, 17 Oktober 2024"
+      "createdAt": "03-12-2024 23:23:10",
+      "updatedAt": "03-12-2024 23:23:10"
     }
   }
 }
@@ -74,24 +75,25 @@
         "title": "Manfaat Jamu untuk Kesehatan",
         "tags": ["Kesehatan", "Manfaat", "Batuk", ...another tag],
         "imageUrl": "https://storage.googleapis.com/lokajamu-bucket/articleImage.png",
-        "contents": [
+        "contents": [ // hanya terdapat type(subtitle dan text) dan text
           {
-            "subtitle": "",
-            "paragraph": ["Isi paragraf 1", "Isi paragraf 2", "Isi paragraf 3", ...another paragraph]
+            "type": "paragraph",
+            "text": "Jamu, sebagai minuman herbal tradisional Indonesia, memiliki banyak manfaat bagi tubuh. Jamu biasanya terbuat dari bahan-bahan alami seperti kunyit, jahe, temulawak, kencur, daun sirih, dan rempah-rempah lainnya. Berikut beberapa manfaat utama jamu bagi kesehatan:"
           },
           {
-            "subtitle": "",
-            "paragraph": ["Isi paragraf 1", "Isi paragraf 2", "Isi paragraf 3", ...another paragraph]
+            "type": "subtitle",
+            "text": "1. Meningkatkan Sistem Imun"
           },
           {
-            "subtitle": "",
-            "paragraph": ["Isi paragraf 1", "Isi paragraf 2", "Isi paragraf 3", ...another paragraph]
+            "type": "paragraph",
+            "text": "Kandungan antioksidan dalam kunyit, jahe, dan temulawak membantu melawan radikal bebas serta meningkatkan daya tahan tubuh. Jahe memiliki sifat antiinflamasi yang dapat membantu tubuh melawan infeksi."
           },
           {
             ...another content
           }
         ],
-        "updatedAt": "Minggu, 17 Oktober 2024"
+        "createdAt": "03-12-2024 23:23:10",
+        "updatedAt": "03-12-2024 23:23:10"
       },
       {
         ...another article

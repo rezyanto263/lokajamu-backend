@@ -37,7 +37,7 @@ const addSpice = async (req, res) => {
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    return res.status(500).json({ status: 'fail', message: 'Add Spice Failed!' });
+    return res.status(500).json({ status: 'error', message: 'Add Spice Failed!' });
   }
 };
 
@@ -58,7 +58,7 @@ const editSpice = async (req, res) => {
 
       const urlParts = new URL(imageUrl);
       const filePath = urlParts.pathname.replace(`/${bucket.name}/`, '');
-      await bucket.file(`${filePath}`).delete();
+      await bucket.file(filePath).delete();
 
       await bucket.upload(imageFile.path, {
         destination: `spices/${fileName}`,
@@ -85,7 +85,7 @@ const editSpice = async (req, res) => {
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    return res.status(500).json({ status: 'fail', message: 'Edit Spice Failed!' });
+    return res.status(500).json({ status: 'error', message: 'Edit Spice Failed!' });
   }
 };
 
@@ -116,7 +116,7 @@ const getSpiceDetails = async (req, res) => {
 
   } catch (err) {
     console.log(`Error occured: ${err.message}`);
-    return res.status(500).json({ status: 'fail', message: 'Can not get spice details' });
+    return res.status(500).json({ status: 'error', message: 'Can not get spice details' });
   }
 };
 
@@ -144,7 +144,7 @@ const searchAllSpices = async (req, res) => {
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    return res.status(500).json({ status: 'fail', message: 'Can not get spices data' });
+    return res.status(500).json({ status: 'error', message: 'Can not get spices data' });
   }
 };
 
@@ -152,7 +152,14 @@ const deleteSpice = async (req, res) => {
   const spiceId = req.params.id;
 
   try {
-    const [spiceResults] = await Spice.delete(spiceId);
+    let [spiceResults] = await Spice.getById(spiceId);
+    const imageUrl = spiceResults[0].imageUrl;
+
+    const urlParts = new URL(imageUrl);
+    const filePath = urlParts.pathname.replace(`/${bucket.name}/`, '');
+    await bucket.file(filePath).delete();
+
+    [spiceResults] = await Spice.delete(spiceId);
 
     if (spiceResults.affectedRows === 0) return res.status(404).json({ status: 'fail', message: 'Spice not found' });
 
@@ -162,7 +169,7 @@ const deleteSpice = async (req, res) => {
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    res.status(500).json({ status: 'fail', message: 'Delete spice failed' });
+    return res.status(500).json({ status: 'error', message: 'Delete spice failed' });
   }
 };
 
