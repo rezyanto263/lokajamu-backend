@@ -163,6 +163,10 @@ const deleteRecipe = async (req, res) => {
 
   try {
     let [recipeResults] = await Recipe.getById(recipeId);
+    const isRecipeIdExist = recipeResults.length > 0;
+
+    if (!isRecipeIdExist) return res.status(404).json({ status: 'fail', message: 'Recipe not found' });
+
     const imageUrl = recipeResults[0].imageUrl;
 
     const urlParts = new URL(imageUrl);
@@ -170,8 +174,6 @@ const deleteRecipe = async (req, res) => {
     await bucket.file(filePath).delete();
 
     [recipeResults] = await Recipe.delete(recipeId);
-
-    if (recipeResults.affectedRows === 0) return res.status(404).json({ status: 'fail', message: 'Recipe not found' });
 
     return res.json({
       status: 'success',

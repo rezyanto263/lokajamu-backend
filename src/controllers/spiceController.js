@@ -153,6 +153,10 @@ const deleteSpice = async (req, res) => {
 
   try {
     let [spiceResults] = await Spice.getById(spiceId);
+    const isSpiceIdExist = spiceResults.length > 0;
+
+    if (!isSpiceIdExist) return res.status(404).json({ status: 'fail', message: 'Spice not found' });
+
     const imageUrl = spiceResults[0].imageUrl;
 
     const urlParts = new URL(imageUrl);
@@ -160,8 +164,6 @@ const deleteSpice = async (req, res) => {
     await bucket.file(filePath).delete();
 
     [spiceResults] = await Spice.delete(spiceId);
-
-    if (spiceResults.affectedRows === 0) return res.status(404).json({ status: 'fail', message: 'Spice not found' });
 
     return res.json({
       status: 'success',

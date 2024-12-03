@@ -144,6 +144,10 @@ const deleteArticle = async (req, res) => {
 
   try {
     let [articleResults] = await Article.getById(articleId);
+    const isArticleIdExist = articleResults.length > 0;
+
+    if (!isArticleIdExist) return res.status(404).json({ status: 'fail', message: 'Article not found' });
+
     const imageUrl = articleResults[0].imageUrl;
 
     const urlParts = new URL(imageUrl);
@@ -151,8 +155,6 @@ const deleteArticle = async (req, res) => {
     await bucket.file(filePath).delete();
 
     [articleResults] = await Article.delete(articleId);
-
-    if (articleResults.affectedRows === 0) return res.status(404).json({ status: 'fail', message: 'Article not found' });
 
     return res.json({
       status: 'success',
