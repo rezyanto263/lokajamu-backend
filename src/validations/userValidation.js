@@ -72,6 +72,9 @@ const editUserValidation = [
       try {
         const [results] = await User.getByEmail(value);
         const isEmailExist = results.length > 0;
+
+        if (!isEmailExist) return true;
+
         const isUserIdSame = results[0].id == req.userId;
 
         if (isEmailExist && !isUserIdSame) throw new Error('VALIDATION_ERROR: This email already used');
