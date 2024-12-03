@@ -56,8 +56,8 @@ const editSpice = async (req, res) => {
       const fileName = Date.now() + path.extname(imageFile.originalname);
 
       const urlParts = new URL(imageUrl);
-      const filePath = urlParts.pathname.replace(`/${bucket.name}/spices/`, '');
-      await bucket.file(`spices/${filePath}`).delete();
+      const filePath = urlParts.pathname.replace(`/${bucket.name}/`, '');
+      await bucket.file(`${filePath}`).delete();
 
       await bucket.upload(imageFile.path, {
         destination: `spices/${fileName}`,
@@ -95,16 +95,21 @@ const getSpiceDetails = async (req, res) => {
     const [spiceResults] = await Spice.getById(spiceId);
     const spice = spiceResults[0];
     const [tagResults] = await Tag.getAll(spiceId, 'spices');
-    const tags = tagResults.map((tag) => tag.tag);
+    const tags = tagResults ? tagResults.map((tag) => tag.tag) : [];
 
-    if (!spice) res.status(404).json({ status: 'fail', message: 'Spice not found' });
+    if (spiceResults.length === 0) {
+      res.status(404).json({ status: 'fail', message: 'Spice not found' });
+    } else {
+      res.json({
+        status: 'success',
+        data: {
+          spice: { ...spice, tags: tags }
+        }
+      });
+    }
 
-    res.json({
-      status: 'success',
-      data: { ...spice, tags: tags }
-    });
   } catch (err) {
-    console.error(`Error occured: ${err.message}`);
+    console.log(`Error occured: ${err.message}`);
     res.status(500).json({ status: 'fail', message: 'Can not get spice details' });
   }
 };
@@ -122,7 +127,9 @@ const searchAllSpices = async (req, res) => {
 
     res.json({
       status: 'success',
-      data: spices
+      data: {
+        spices: spices
+      }
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
@@ -134,8 +141,10 @@ const deleteSpice = async (req, res) => {
   const spiceId = req.params.id;
 
   try {
-    await Spice.delete(spiceId);
-    await Tag.deleteAll(spiceId, 'spices');
+    const [spiceResults] = await Spice.delete(spiceId);
+
+    if (spiceResults.affectedRows === 0) res.status(404).json({ status: 'fail', message: 'Spice not found' });
+
     res.json({
       status: 'success',
       message: 'Spice deleted successfully'

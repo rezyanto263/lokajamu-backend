@@ -1,33 +1,27 @@
-const { body, param, validationResult } = require('express-validator');
-const path = require('path');
-
-const isFileLessThan10MB = (value, { req }) => {
-  if (req.file && req.file.size > 1024 * 1024 * 10) {
-    throw new Error('Image size maximum is 10MB');
-  }
-  return true;
-};
-
-const isFileExtensionValid = (value, { req }) => {
-  const fileExtension = path.extname(req.file.originalname);
-  const allowedExtensions = ['.jpg', '.jpeg', '.png'];
-  if (!allowedExtensions.includes(fileExtension)) {
-    throw new Error('Only jpg, jpeg, and png images are allowed');
-  }
-  return true;
-};
-
-const isImageExist = (value, { req }) => {
-  if (!req.file) {
-    throw new Error('Spice image required');
-  }
-  return true;
-};
+const { body, param } = require('express-validator');
+const { isImageExist, isFileLessThan10MB, isFileExtensionValid } = require('../utils/imageValidationRule');
+const db = require('../config/database');
 
 const addSpiceValidation = [
   body('name')
     .notEmpty().withMessage('Spice name required')
-    .isString().withMessage('Spice name must be a string'),
+    .isString().withMessage('Spice name must be a string')
+    .custom(async (value) => {
+      try {
+        const [spiceResults] = await db.query('SELECT name FROM spices WHERE name = ?', [value]);
+        const isSpiceNameExist = spiceResults.length > 0;
+
+        if (isSpiceNameExist) throw new Error('VALIDATION_ERROR: This spice name already exist');
+
+        return true;
+      } catch (err) {
+        if (!err.message.startsWith('VALIDATION_ERROR')) {
+          console.error('Database error:', err.message);
+          throw new Error('DATABASE_ERROR: Database error occurred while validating spice name');
+        }
+        throw err;
+      }
+    }),
 
   body('tags').optional()
     .isArray().withMessage('Tags must be an array'),
@@ -41,32 +35,49 @@ const addSpiceValidation = [
     .isString().withMessage('Benefits must be a string'),
 
   body('image')
-    .custom(isImageExist).custom(isFileLessThan10MB).custom(isFileExtensionValid),
-
-  (req, res, next) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      const errorMessages = errors.array().map((error) => ({ field: error.path, message: error.msg }));
-
-      return res.status(400).json({
-        status: 'fail',
-        message: 'Data not valid',
-        errors: errorMessages
-      });
-    } else {
-      next();
-    }
-  }
+    .custom(isImageExist).bail()
+    .custom(isFileLessThan10MB).custom(isFileExtensionValid),
 ];
 
 const editSpiceValidation = [
   param('id')
-    .notEmpty().withMessage('Spice id required')
-    .isNumeric().withMessage('Spice id must be a number'),
+    .isNumeric().withMessage('Spice id must be a number')
+    .custom(async (value) => {
+      try {
+        const [spiceResults] = await db.query('SELECT id FROM spices WHERE id = ?', [value]);
+        const isSpiceIdExist = spiceResults.length > 0;
+
+        if (!isSpiceIdExist) throw new Error('NOT_FOUND: Spice id not found');
+
+        return true;
+      } catch (err) {
+        if (!err.message.startsWith('NOT_FOUND')) {
+          console.error('Database error:', err.message);
+          throw new Error('DATABASE_ERROR: Database error occurred while validating spice id');
+        }
+        throw err;
+      }
+    }),
 
   body('name').optional()
-    .isString().withMessage('Spice name must be a string'),
+    .isString().withMessage('Spice name must be a string')
+    .custom(async (value, { req }) => {
+      try {
+        const [spiceResults] = await db.query('SELECT id, name FROM spices WHERE name = ?', [value]);
+        const isSpiceNameExist = spiceResults.length > 0;
+        const isSpiceIdSame = spiceResults[0].id === parseInt(req.params.id);
+
+        if (isSpiceNameExist && !isSpiceIdSame) throw new Error('VALIDATION_ERROR: This spice name already exist');
+
+        return true;
+      } catch (err) {
+        if (!err.message.startsWith('VALIDATION_ERROR')) {
+          console.error('Database error:', err.message);
+          throw new Error('DATABASE_ERROR: Database error occurred while validating spice name');
+        }
+        throw err;
+      }
+    }),
 
   body('tags').optional()
     .isArray().withMessage('Tags must be an array'),
@@ -77,24 +88,11 @@ const editSpiceValidation = [
   body('benefits').optional()
     .isString().withMessage('Benefits must be a string'),
 
-  body('image').optional()
-    .custom(isFileLessThan10MB).custom(isFileExtensionValid),
-
-  (req, res, next) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      const errorMessages = errors.array().map((error) => ({ field: error.path, message: error.msg }));
-
-      return res.status(400).json({
-        status: 'fail',
-        message: 'Data not valid',
-        errors: errorMessages
-      });
-    } else {
-      next();
-    }
-  }
+  body('image')
+    .custom((value, { req }) => {
+      if (!req.file) return true;
+      return isFileLessThan10MB(value, { req }) && isFileExtensionValid(value, { req });
+    }),
 ];
 
 module.exports = {

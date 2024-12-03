@@ -15,6 +15,9 @@ app.use('/api/users', userRoutes);
 const spiceRoutes = require('./src/routes/spiceRoute');
 app.use('/api/spices', spiceRoutes);
 
+const recipeRoutes = require('./src/routes/recipeRoute');
+app.use('/api/recipes', recipeRoutes);
+
 db.getConnection()
   .then(() => {
     app.listen(PORT, () => {

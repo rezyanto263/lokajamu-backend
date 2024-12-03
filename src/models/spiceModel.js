@@ -29,7 +29,10 @@ const Spice = {
     return db.query(sql, [name, imageUrl, description, benefits, id]);
   },
   delete: (id) => {
-    const sql = 'DELETE FROM spices WHERE id = ?';
+    const sql = `DELETE spices, tags
+                  FROM spices
+                  JOIN tags ON tags.entityId = spices.id AND tags.entityType = 'spices'
+                  WHERE spices.id = ?`;
     return db.query(sql, [id]);
   }
 };
