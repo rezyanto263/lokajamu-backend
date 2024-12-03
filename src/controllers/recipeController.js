@@ -14,23 +14,18 @@ const getRecipeById = async (req, res) => {
   try {
     const [recipeResults] = await Recipe.getById(recipeId);
 
-    if (recipeResults.length === 0) {
-      res.status(404).json({
-        status: 'fail',
-        message: 'Recipe not found'
-      });
-    } else {
-      const [recipe] = formatRecipeDatas(recipeResults);
-      res.json({
-        status: 'success',
-        data: {
-          recipe: recipe
-        }
-      });
-    }
+    if (recipeResults.length === 0) return res.status(404).json({ status: 'fail', message: 'Recipe not found' });
+
+    const [recipe] = formatRecipeDatas(recipeResults);
+    return res.json({
+      status: 'success',
+      data: {
+        recipe: recipe
+      }
+    });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    res.status(500).json({ status: 'fail', message: 'Can not get recipe data' });
+    return res.status(500).json({ status: 'fail', message: 'Can not get recipe data' });
   }
 };
 
@@ -49,7 +44,7 @@ const searchAllRecipes = async (req, res) => {
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    res.status(500).json({ status: 'fail', message: 'Can not get recipes data' });
+    return res.status(500).json({ status: 'fail', message: 'Can not get recipes data' });
   }
 };
 
@@ -83,7 +78,7 @@ const addRecipe = async (req, res) => {
       await Tip.addBatch(tips.map((tip) => [recipeId, tip]));
     }
 
-    res.status(201).json({
+    return res.status(201).json({
       status: 'success',
       message: 'Recipe added successfully',
       data: {
@@ -92,7 +87,7 @@ const addRecipe = async (req, res) => {
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    res.status(500).json({ status: 'fail', message: 'Can not add recipe data' });
+    return res.status(500).json({ status: 'fail', message: 'Can not add recipe data' });
   }
 };
 
@@ -153,7 +148,7 @@ const editRecipe = async (req, res) => {
       await Tip.addBatch(steps.map((s) => [recipeId, s.description]));
     }
 
-    res.json({
+    return res.json({
       status: 'success',
       message: 'Recipe edited successfully'
     });
@@ -169,15 +164,15 @@ const deleteRecipe = async (req, res) => {
   try {
     const [recipeResults] = await Recipe.delete(recipeId);
 
-    if (recipeResults.affectedRows === 0) res.status(404).json({ status: 'fail', message: 'Spice not found' });
+    if (recipeResults.affectedRows === 0) return res.status(404).json({ status: 'fail', message: 'Recipe not found' });
 
-    res.json({
+    return res.json({
       status: 'success',
       message: 'Recipe deleted successfully'
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    res.status(500).json({ status: 'fail', message: 'Can not delete recipe data' });
+    return res.status(500).json({ status: 'fail', message: 'Can not delete recipe data' });
   }
 };
 

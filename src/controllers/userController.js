@@ -13,10 +13,10 @@ const register = async (req, res) => {
 
     const [results] = await User.add({ firstName, lastName, email, hashedPassword });
 
-    res.status(201).json({ status: 'success', message: 'Register account success!', data: { userId: results.insertId } });
+    return res.status(201).json({ status: 'success', message: 'Register account success!', data: { userId: results.insertId } });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    res.status(500).json({ status: 'fail', message: 'Register account failed!' });
+    return res.status(500).json({ status: 'fail', message: 'Register account failed!' });
   }
 };
 
@@ -33,13 +33,13 @@ const login = async (req, res) => {
 
     const token = generateToken(results[0].id, '1h');
 
-    res.json({
+    return res.json({
       status: 'success',
       data: { token }
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    res.status(500).json({ status: 'fail', message: 'Login account failed!' });
+    return res.status(500).json({ status: 'fail', message: 'Login account failed!' });
   }
 };
 
@@ -52,7 +52,7 @@ const getUserDetails = async (req, res) => {
 
     const { firstName, lastName, email, createdAt, updatedAt } = results[0];
 
-    res.json({
+    return res.json({
       status: 'success',
       data: {
         firstName: firstName,
@@ -64,7 +64,7 @@ const getUserDetails = async (req, res) => {
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    res.status(500).json({ status: 'fail', message: 'Get account failed!' });
+    return res.status(500).json({ status: 'fail', message: 'Get account failed!' });
   }
 };
 
@@ -78,13 +78,13 @@ const editUser = async (req, res) => {
 
     if (editResults.affectedRows === 0) return res.status(401).json({ status: 'fail', message: 'Unauthorized!' });
 
-    res.json({
+    return res.json({
       status: 'success',
       message: 'Account edited successfully'
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    res.status(500).json({ status: 'fail', message: 'Edit account failed!' });
+    return res.status(500).json({ status: 'fail', message: 'Edit account failed!' });
   }
 };
 
@@ -113,7 +113,7 @@ const forgotPassword = async (req, res) => {
       await User.addResetToken(email, resetToken, resetTokenExpire);
     }
 
-    res.json({
+    return res.json({
       status: 'success',
       message: 'The reset token has sent to the email!',
       data: {
@@ -122,7 +122,7 @@ const forgotPassword = async (req, res) => {
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    res.status(500).json({ status: 'fail', message: 'Forgot password failed!' });
+    return res.status(500).json({ status: 'fail', message: 'Forgot password failed!' });
   }
 };
 
@@ -136,21 +136,19 @@ const verifyResetToken = async (req, res) => {
     const dateTimeNow = moment();
     const expireTime = moment(resetTokenExpire);
 
-    if (dateTimeNow.isBefore(expireTime)) {
-      const token = generateToken(id, '15m');
-      res.json({
-        status: 'success',
-        message: 'The reset token has been verified',
-        data: {
-          token: token
-        }
-      });
-    } else {
-      res.status(401).json({ status: 'fail', message: 'Unauthorized!' });
-    }
+    if (dateTimeNow.isAfter(expireTime)) return res.status(401).json({ status: 'fail', message: 'Unauthorized!' });
+
+    const token = generateToken(id, '15m');
+    return res.json({
+      status: 'success',
+      message: 'The reset token has been verified',
+      data: {
+        token: token
+      }
+    });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    res.status(500).json({ status: 'fail', message: 'Verify reset token failed!' });
+    return res.status(500).json({ status: 'fail', message: 'Verify reset token failed!' });
   }
 };
 
@@ -162,13 +160,13 @@ const changePassword = async (req, res) => {
 
     await User.changePassword(req.userId, hashedPassword);
 
-    res.json({
+    return res.json({
       status: 'success',
       message: 'Password updated successfully'
     });
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ status: 'fail', message: 'Change password failed!' });
+    return res.status(500).json({ status: 'fail', message: 'Change password failed!' });
   }
 };
 

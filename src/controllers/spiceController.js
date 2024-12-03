@@ -1,5 +1,6 @@
 const Spice = require('../models/spiceModel');
 const Tag = require('../models/tagModel');
+const Recipe = require('../models/recipeModel');
 const path = require('path');
 const fs = require('fs');
 const bucket = require('../config/googleCloud');
@@ -27,7 +28,7 @@ const addSpice = async (req, res) => {
       await Tag.addBatch(tags.map((tag) => [tag, spiceId, 'spices']));
     }
 
-    res.status(201).json({
+    return res.status(201).json({
       status: 'success',
       message: 'Spice added successfully',
       data: {
@@ -36,7 +37,7 @@ const addSpice = async (req, res) => {
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    res.status(500).json({ status: 'fail', message: 'Add Spice Failed!' });
+    return res.status(500).json({ status: 'fail', message: 'Add Spice Failed!' });
   }
 };
 
@@ -78,13 +79,13 @@ const editSpice = async (req, res) => {
       await Tag.addBatch(tags.map((tag) => [tag, spiceId, 'spices']));
     }
 
-    res.json({
+    return res.json({
       status: 'success',
       message: 'Spice edited successfully'
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    res.status(500).json({ status: 'fail', message: 'Edit Spice Failed!' });
+    return res.status(500).json({ status: 'fail', message: 'Edit Spice Failed!' });
   }
 };
 
@@ -96,21 +97,25 @@ const getSpiceDetails = async (req, res) => {
     const spice = spiceResults[0];
     const [tagResults] = await Tag.getAll(spiceId, 'spices');
     const tags = tagResults ? tagResults.map((tag) => tag.tag) : [];
+    const [recipeResults] = await Recipe.search(spice.name);
+    const jamuList = recipeResults.map((recipe) => recipe.name);
 
-    if (spiceResults.length === 0) {
-      res.status(404).json({ status: 'fail', message: 'Spice not found' });
-    } else {
-      res.json({
-        status: 'success',
-        data: {
-          spice: { ...spice, tags: tags }
+    if (spiceResults.length === 0) return res.status(404).json({ status: 'fail', message: 'Spice not found' });
+
+    return res.json({
+      status: 'success',
+      data: {
+        spice: {
+          ...spice,
+          tags: tags,
+          jamuList
         }
-      });
-    }
+      }
+    });
 
   } catch (err) {
     console.log(`Error occured: ${err.message}`);
-    res.status(500).json({ status: 'fail', message: 'Can not get spice details' });
+    return res.status(500).json({ status: 'fail', message: 'Can not get spice details' });
   }
 };
 
@@ -120,12 +125,17 @@ const searchAllSpices = async (req, res) => {
   try {
     const [spiceResults] = searchKeyword ? await Spice.search(searchKeyword) : await Spice.getAll();
 
-    const spices = spiceResults.map((spice) => {
-      spice.tags = spice.tags ? spice.tags.split(',') : [];
-      return spice;
-    });
+    const spices = await Promise.all(
+      spiceResults.map(async (spice) => {
+        spice.tags = spice.tags ? spice.tags.split(',') : [];
+        const [recipeResults] = await Recipe.search(spice.name);
+        const jamuList = recipeResults.map((recipe) => recipe.name);
+        spice.jamuList = jamuList;
+        return spice;
+      })
+    );
 
-    res.json({
+    return res.json({
       status: 'success',
       data: {
         spices: spices
@@ -133,7 +143,7 @@ const searchAllSpices = async (req, res) => {
     });
   } catch (err) {
     console.error(`Error occured: ${err.message}`);
-    res.status(500).json({ status: 'fail', message: 'Can not get spices data' });
+    return res.status(500).json({ status: 'fail', message: 'Can not get spices data' });
   }
 };
 
@@ -143,9 +153,9 @@ const deleteSpice = async (req, res) => {
   try {
     const [spiceResults] = await Spice.delete(spiceId);
 
-    if (spiceResults.affectedRows === 0) res.status(404).json({ status: 'fail', message: 'Spice not found' });
+    if (spiceResults.affectedRows === 0) return res.status(404).json({ status: 'fail', message: 'Spice not found' });
 
-    res.json({
+    return res.json({
       status: 'success',
       message: 'Spice deleted successfully'
     });
