@@ -11,11 +11,11 @@ const addSpiceValidation = [
         const [spiceResults] = await db.query('SELECT name FROM spices WHERE name = ?', [value]);
         const isSpiceNameExist = spiceResults.length > 0;
 
-        if (isSpiceNameExist) throw new Error('VALIDATION_ERROR: This spice name already exist');
+        if (isSpiceNameExist) throw new Error('CONFLICT_ERROR: This spice name already exist');
 
         return true;
       } catch (err) {
-        if (!err.message.startsWith('VALIDATION_ERROR')) {
+        if (!err.message.startsWith('CONFLICT_ERROR')) {
           console.error('Database error:', err.message);
           throw new Error('DATABASE_ERROR: Database error occurred while validating spice name');
         }
@@ -47,11 +47,11 @@ const editSpiceValidation = [
         const [spiceResults] = await db.query('SELECT id FROM spices WHERE id = ?', [value]);
         const isSpiceIdExist = spiceResults.length > 0;
 
-        if (!isSpiceIdExist) throw new Error('NOT_FOUND: Spice id not found');
+        if (!isSpiceIdExist) throw new Error('NOT_FOUND_ERROR: Spice id not found');
 
         return true;
       } catch (err) {
-        if (!err.message.startsWith('NOT_FOUND')) {
+        if (!err.message.startsWith('NOT_FOUND_ERROR')) {
           console.error('Database error:', err.message);
           throw new Error('DATABASE_ERROR: Database error occurred while validating spice id');
         }
@@ -63,15 +63,18 @@ const editSpiceValidation = [
     .isString().withMessage('Spice name must be a string')
     .custom(async (value, { req }) => {
       try {
-        const [spiceResults] = await db.query('SELECT id, name FROM spices WHERE name = ?', [value]);
+        const [spiceResults] = await db.query('SELECT id,name FROM spices WHERE name = ?', [value]);
         const isSpiceNameExist = spiceResults.length > 0;
+
+        if (!isSpiceNameExist) return true;
+
         const isSpiceIdSame = spiceResults[0].id === parseInt(req.params.id);
 
-        if (isSpiceNameExist && !isSpiceIdSame) throw new Error('VALIDATION_ERROR: This spice name already exist');
+        if (isSpiceNameExist && !isSpiceIdSame) throw new Error('CONFLICT_ERROR: This spice name already exist');
 
         return true;
       } catch (err) {
-        if (!err.message.startsWith('VALIDATION_ERROR')) {
+        if (!err.message.startsWith('CONFLICT_ERROR')) {
           console.error('Database error:', err.message);
           throw new Error('DATABASE_ERROR: Database error occurred while validating spice name');
         }

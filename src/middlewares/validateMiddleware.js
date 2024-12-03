@@ -19,19 +19,19 @@ const validateMiddleware = (validationSchema) => [
         });
       }
 
-      const notFoundError = errorMessages.find((error) => error.message.startsWith('NOT_FOUND'));
+      const notFoundError = errorMessages.find((error) => error.message.startsWith('NOT_FOUND_ERROR'));
       if (notFoundError) {
         return res.status(404).json({
           status: 'fail',
-          message: notFoundError.message.replace('NOT_FOUND: ', ''),
+          message: notFoundError.message.replace('NOT_FOUND_ERROR: ', ''),
         });
       }
 
-      const conflictError = errorMessages.find((error) => error.message.startsWith('VALIDATION_ERROR'));
+      const conflictError = errorMessages.find((error) => error.message.startsWith('CONFLICT_ERROR'));
       if (conflictError) {
         return res.status(409).json({
           status: 'fail',
-          message: conflictError.message.replace('VALIDATION_ERROR: ', ''),
+          message: conflictError.message.replace('CONFLICT_ERROR: ', ''),
         });
       }
 

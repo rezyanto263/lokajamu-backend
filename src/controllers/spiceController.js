@@ -95,12 +95,13 @@ const getSpiceDetails = async (req, res) => {
   try {
     const [spiceResults] = await Spice.getById(spiceId);
     const spice = spiceResults[0];
+
+    if (spiceResults.length === 0) return res.status(404).json({ status: 'fail', message: 'Spice not found' });
+
     const [tagResults] = await Tag.getAll(spiceId, 'spices');
     const tags = tagResults ? tagResults.map((tag) => tag.tag) : [];
     const [recipeResults] = await Recipe.search(spice.name);
     const jamuList = recipeResults.map((recipe) => recipe.name);
-
-    if (spiceResults.length === 0) return res.status(404).json({ status: 'fail', message: 'Spice not found' });
 
     return res.json({
       status: 'success',

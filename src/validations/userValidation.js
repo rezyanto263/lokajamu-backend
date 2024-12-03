@@ -20,11 +20,11 @@ const registerUserValidation = [
         const [results] = await User.getByEmail(value);
         const isEmailExist = results.length > 0;
 
-        if (isEmailExist) throw new Error('VALIDATION_ERROR: This email already used');
+        if (isEmailExist) throw new Error('CONFLICT_ERROR: This email already used');
 
         return true;
       } catch (err) {
-        if (!err.message.startsWith('VALIDATION_ERROR')) {
+        if (!err.message.startsWith('CONFLICT_ERROR')) {
           console.error('Database error:', err.message);
           throw new Error('DATABASE_ERROR: Database error occurred while validating user email');
         }
@@ -77,11 +77,11 @@ const editUserValidation = [
 
         const isUserIdSame = results[0].id == req.userId;
 
-        if (isEmailExist && !isUserIdSame) throw new Error('VALIDATION_ERROR: This email already used');
+        if (isEmailExist && !isUserIdSame) throw new Error('CONFLICT_ERROR: This email already used');
 
         return true;
       } catch (err) {
-        if (!err.message.startsWith('VALIDATION_ERROR')) {
+        if (!err.message.startsWith('CONFLICT_ERROR')) {
           console.error('Database error:', err.message);
           throw new Error('DATABASE_ERROR: Database error occurred while validating user email');
         }

@@ -12,11 +12,11 @@ const addRecipeValidation = [
         const [recipeResults] = await db.query('SELECT name FROM recipes WHERE name = ?', [value]);
         const isRecipeNameExist = recipeResults.length > 0;
 
-        if (isRecipeNameExist) throw new Error('VALIDATION_ERROR: This recipe name already exist');
+        if (isRecipeNameExist) throw new Error('CONFLICT_ERROR: This recipe name already exist');
 
         return true;
       } catch (err) {
-        if (!err.message.startsWith('VALIDATION_ERROR')) {
+        if (!err.message.startsWith('CONFLICT_ERROR')) {
           console.error('Database error:', err.message);
           throw new Error('DATABASE_ERROR: Database error occurred while validating spice name');
         }
@@ -78,11 +78,11 @@ const editRecipeValidation = [
         const [recipeResults] = await db.query('SELECT id FROM recipes WHERE id = ?', [value]);
         const isRecipeIdExist = recipeResults.length > 0;
 
-        if (!isRecipeIdExist) throw new Error('NOT_FOUND: Recipe id not found');
+        if (!isRecipeIdExist) throw new Error('NOT_FOUND_ERROR: Recipe id not found');
 
         return true;
       } catch (err) {
-        if (!err.message.startsWith('NOT_FOUND')) {
+        if (!err.message.startsWith('NOT_FOUND_ERROR')) {
           console.error('Database error:', err.message);
           throw new Error('DATABASE_ERROR: Database error occurred while validating recipe id');
         }
@@ -97,13 +97,16 @@ const editRecipeValidation = [
       try {
         const [recipeResults] = await db.query('SELECT id, name FROM recipes WHERE name = ?', [value]);
         const isRecipeNameExist = recipeResults.length > 0;
+
+        if (!isRecipeNameExist) return true;
+
         const isRecipeIdSame = recipeResults[0].id === parseInt(req.params.id);
 
-        if (isRecipeNameExist && !isRecipeIdSame) throw new Error('VALIDATION_ERROR: This recipe name already exist');
+        if (isRecipeNameExist && !isRecipeIdSame) throw new Error('CONFLICT_ERROR: This recipe name already exist');
 
         return true;
       } catch (err) {
-        if (!err.message.startsWith('VALIDATION_ERROR')) {
+        if (!err.message.startsWith('CONFLICT_ERROR')) {
           console.error('Database error:', err.message);
           throw new Error('DATABASE_ERROR: Database error occurred while validating recipe name');
         }
