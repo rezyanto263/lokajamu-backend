@@ -4,7 +4,7 @@ const { isImageExist, isFileLessThan10MB, isFileExtensionValid } = require('../u
 
 const addArticleValidation = [
   body('title')
-    .notEmpty().withMessage('Article title is required')
+    .notEmpty().withMessage('Article title is required').bail()
     .isString().withMessage('Article title must be a string')
     .isLength({ max: 50 }).withMessage('Article title must not exceed 50 characters')
     .custom(async (value) => {
@@ -30,20 +30,24 @@ const addArticleValidation = [
   body('image')
     .custom(isImageExist).bail().custom(isFileLessThan10MB).custom(isFileExtensionValid),
 
+  body('contents')
+    .exists().withMessage('Contents is required').bail()
+    .isArray().withMessage('Contents must be an array'),
+
   body('contents.*.type')
-    .notEmpty().withMessage('Content type is required')
+    .notEmpty().withMessage('Content type is required').bail()
     .isString().withMessage('Content type must be a string'),
 
   body('contents.*.text')
-    .notEmpty().withMessage('Content text is required')
+    .notEmpty().withMessage('Content text is required').bail()
     .isString().withMessage('Content text must be a string'),
 ];
 
 const editArticleValidation = [
   param('id')
-    .isNumeric().withMessage('Article id must be a number')
     .custom(async (value) => {
       try {
+        if (isNaN(parseInt(value))) throw new Error('VALIDATION_ERROR: ID must be a number');
         const [articleResults] = await db.query('SELECT id FROM articles WHERE id = ?', [value]);
         const isArticleIdExist = articleResults.length > 0;
 
@@ -51,7 +55,8 @@ const editArticleValidation = [
 
         return true;
       } catch (err) {
-        if (!err.message.startsWith('NOT_FOUND_ERROR')) {
+        if (err.message.startsWith('VALIDATION_ERROR')) throw new Error(err.message.replace('VALIDATION_ERROR: ', ''));
+        if (!err.message.startsWith('NOT_FOUND_ERROR') && !err.message.startsWith('VALIDATION_ERROR')) {
           console.error('Database error:', err.message);
           throw new Error('DATABASE_ERROR: Database error occurred while validating article id');
         }
@@ -92,10 +97,15 @@ const editArticleValidation = [
       return isFileLessThan10MB(value, { req }) && isFileExtensionValid(value, { req });
     }),
 
-  body('contents.*.type').optional()
+  body('contents').optional()
+    .isArray().withMessage('Contents must be an array'),
+
+  body('contents.*.type')
+    .notEmpty().withMessage('Content type is required').bail()
     .isString().withMessage('Content type must be a string'),
 
-  body('contents.*.text').optional()
+  body('contents.*.text')
+    .notEmpty().withMessage('Content text is required').bail()
     .isString().withMessage('Content text must be a string'),
 ];
 

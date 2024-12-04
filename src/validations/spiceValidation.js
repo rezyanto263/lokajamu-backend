@@ -41,9 +41,9 @@ const addSpiceValidation = [
 
 const editSpiceValidation = [
   param('id')
-    .isNumeric().withMessage('Spice id must be a number')
     .custom(async (value) => {
       try {
+        if (isNaN(parseInt(value))) throw new Error('VALIDATION_ERROR: ID must be a number');
         const [spiceResults] = await db.query('SELECT id FROM spices WHERE id = ?', [value]);
         const isSpiceIdExist = spiceResults.length > 0;
 
@@ -51,7 +51,8 @@ const editSpiceValidation = [
 
         return true;
       } catch (err) {
-        if (!err.message.startsWith('NOT_FOUND_ERROR')) {
+        if (err.message.startsWith('VALIDATION_ERROR')) throw new Error(err.message.replace('VALIDATION_ERROR: ', ''));
+        if (!err.message.startsWith('NOT_FOUND_ERROR') && !err.message.startsWith('VALIDATION_ERROR')) {
           console.error('Database error:', err.message);
           throw new Error('DATABASE_ERROR: Database error occurred while validating spice id');
         }

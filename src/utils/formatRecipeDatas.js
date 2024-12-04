@@ -18,9 +18,9 @@ const formatRecipeDatas = (rows) => {
     return {
       id: row.id,
       name: row.name,
-      description: row.description,
-      imageUrl: row.imageUrl,
       tags,
+      imageUrl: row.imageUrl,
+      description: row.description,
       ingredients,
       steps,
       prepTime: row.prepTime,

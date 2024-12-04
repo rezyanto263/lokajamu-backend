@@ -4,7 +4,7 @@ const db = require('../config/database');
 
 const addRecipeValidation = [
   body('name')
-    .notEmpty().withMessage('Recipe name is required')
+    .notEmpty().withMessage('Recipe name is required').bail()
     .isString().withMessage('Recipe name must be a string')
     .isLength({ max: 50 }).withMessage('Recipe name must not exceed 50 characters')
     .custom(async (value) => {
@@ -29,41 +29,49 @@ const addRecipeValidation = [
     .isArray().withMessage('Tags must be an array'),
 
   body('description')
-    .notEmpty().withMessage('Recipe description is required')
+    .notEmpty().withMessage('Recipe description is required').bail()
     .isString().withMessage('Description must be a string'),
 
   body('image')
     .custom(isImageExist).bail().custom(isFileLessThan10MB).custom(isFileExtensionValid),
 
+  body('ingredients')
+    .exists().withMessage('Ingredients is required').bail()
+    .isArray().withMessage('Ingredients must be an array'),
+
   body('ingredients.*.ingredient')
-    .notEmpty().withMessage('Ingredient name is required')
+    .notEmpty().withMessage('Ingredient name is required').bail()
     .isString().withMessage('Ingredient name must be a string'),
 
   body('ingredients.*.quantity')
-    .notEmpty().withMessage('Ingredient quantity is required')
+    .notEmpty().withMessage('Ingredient quantity is required').bail()
     .isString().withMessage('Ingredient quantity must be a string'),
 
   body('ingredients.*.notes').optional()
     .isString().withMessage('Notes must be a string'),
 
+  body('steps')
+    .exists().withMessage('Steps is required').bail()
+    .isArray().withMessage('Steps must be an array'),
+
   body('steps.*.stepNumber')
-    .notEmpty().withMessage('Step number is required')
+    .notEmpty().withMessage('Step number is required').bail()
     .isInt().withMessage('Step number must be an integer'),
 
   body('steps.*.instruction')
-    .notEmpty().withMessage('Instruction is required')
+    .notEmpty().withMessage('Instruction is required').bail()
     .isString().withMessage('Instruction must be a string'),
 
   body('prepTime')
-    .notEmpty().withMessage('Preparation time is required')
+    .notEmpty().withMessage('Preparation time is required').bail()
     .isString().withMessage('Preparation time must be a string'),
 
   body('cookTime')
-    .notEmpty().withMessage('Cooking time is required')
+    .notEmpty().withMessage('Cooking time is required').bail()
     .isString().withMessage('Cooking time must be a string'),
 
   body('servingSize')
-    .notEmpty().withMessage('Serving size is required')
+    .notEmpty().withMessage('Serving size is required').bail()
     .isString().withMessage('Serving size must be a string'),
 
   body('tips').optional()
@@ -72,9 +80,9 @@ const addRecipeValidation = [
 
 const editRecipeValidation = [
   param('id')
-    .isNumeric().withMessage('Recipe id must be a number')
     .custom(async (value) => {
       try {
+        if (isNaN(parseInt(value))) throw new Error('VALIDATION_ERROR: ID must be a number');
         const [recipeResults] = await db.query('SELECT id FROM recipes WHERE id = ?', [value]);
         const isRecipeIdExist = recipeResults.length > 0;
 
@@ -82,7 +90,8 @@ const editRecipeValidation = [
 
         return true;
       } catch (err) {
-        if (!err.message.startsWith('NOT_FOUND_ERROR')) {
+        if (err.message.startsWith('VALIDATION_ERROR')) throw new Error(err.message.replace('VALIDATION_ERROR: ', ''));
+        if (!err.message.startsWith('NOT_FOUND_ERROR') && !err.message.startsWith('VALIDATION_ERROR')) {
           console.error('Database error:', err.message);
           throw new Error('DATABASE_ERROR: Database error occurred while validating recipe id');
         }
@@ -126,19 +135,29 @@ const editRecipeValidation = [
       return isFileLessThan10MB(value, { req }) && isFileExtensionValid(value, { req });
     }),
 
-  body('ingredients.*.ingredient').optional()
+  body('ingredients').optional()
+    .isArray().withMessage('Ingredients must be an array'),
+
+  body('ingredients.*.ingredient')
+    .notEmpty().withMessage('Ingredient name is required').bail()
     .isString().withMessage('Ingredient name must be a string'),
 
-  body('ingredients.*.quantity').optional()
+  body('ingredients.*.quantity')
+    .notEmpty().withMessage('Ingredient quantity is required').bail()
     .isString().withMessage('Ingredient quantity must be a string'),
 
   body('ingredients.*.notes').optional()
     .isString().withMessage('Notes must be a string'),
 
-  body('steps.*.stepNumber').optional()
+  body('steps').optional()
+    .isArray().withMessage('Steps must be an array'),
+
+  body('steps.*.stepNumber')
+    .notEmpty().withMessage('Step number is required').bail()
     .isInt().withMessage('Step number must be an integer'),
 
-  body('steps.*.instruction').optional()
+  body('steps.*.instruction')
+    .notEmpty().withMessage('Instruction is required').bail()
     .isString().withMessage('Instruction must be a string'),
 
   body('prepTime').optional()

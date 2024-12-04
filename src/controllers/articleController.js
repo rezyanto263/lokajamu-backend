@@ -68,7 +68,7 @@ const addArticle = async (req, res) => {
     const articleId = articleResults.insertId;
 
     if (tags) {
-      await Tag.addBatch(tags.map((tag) => [tag.tag, articleId, 'articles']));
+      await Tag.addBatch(tags.map((tag) => [tag, articleId, 'articles']));
     }
 
     await Content.addBatch(contents.map((c) => [articleId, c.type, c.text]));
