@@ -3,7 +3,7 @@ const db = require('../config/database');
 const Recipe = {
   search: (searchKeyword) => {
     const sql = `SELECT r.*, 
-                  GROUP_CONCAT(DISTINCT ta.tag ORDER BY ta.id) AS tags,
+                  GROUP_CONCAT(DISTINCT ta.tag ORDER BY ta.tag) AS tags,
                   GROUP_CONCAT(DISTINCT i.ingredient ORDER BY i.id SEPARATOR '|') AS ingredientNames,
                   GROUP_CONCAT(DISTINCT i.quantity ORDER BY i.id SEPARATOR '|') AS ingredientQuantities,
                   GROUP_CONCAT(DISTINCT i.notes ORDER BY i.id SEPARATOR '|') AS ingredientNotes,
@@ -21,7 +21,7 @@ const Recipe = {
   },
   getAll: () => {
     const sql =  `SELECT r.*, 
-                    GROUP_CONCAT(DISTINCT ta.tag ORDER BY ta.id) AS tags,
+                    GROUP_CONCAT(DISTINCT ta.tag ORDER BY ta.tag) AS tags,
                     GROUP_CONCAT(DISTINCT i.ingredient ORDER BY i.id SEPARATOR '|') AS ingredientNames,
                     GROUP_CONCAT(DISTINCT i.quantity ORDER BY i.id SEPARATOR '|') AS ingredientQuantities,
                     GROUP_CONCAT(DISTINCT i.notes ORDER BY i.id SEPARATOR '|') AS ingredientNotes,
@@ -38,7 +38,7 @@ const Recipe = {
   },
   getById: (id) => {
     const sql = `SELECT r.*,
-                    GROUP_CONCAT(DISTINCT ta.tag ORDER BY ta.id) AS tags,
+                    GROUP_CONCAT(DISTINCT ta.tag ORDER BY ta.tag) AS tags,
                     GROUP_CONCAT(DISTINCT i.ingredient ORDER BY i.id SEPARATOR '|') AS ingredientNames,
                     GROUP_CONCAT(DISTINCT i.quantity ORDER BY i.id SEPARATOR '|') AS ingredientQuantities,
                     GROUP_CONCAT(DISTINCT i.notes ORDER BY i.id SEPARATOR '|') AS ingredientNotes,

@@ -2,7 +2,7 @@ const db = require('../config/database');
 
 const Tag = {
   getAll: (entityId, entityType) => {
-    const sql = 'SELECT * FROM tags WHERE entityId = ? AND entityType = ?';
+    const sql = 'SELECT * FROM tags WHERE entityId = ? AND entityType = ? ORDER BY tag';
     return db.query(sql, [entityId, entityType]);
   },
   addBatch: (tags) => {

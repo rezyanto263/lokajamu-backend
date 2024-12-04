@@ -97,7 +97,7 @@ const editArticle = async (req, res) => {
     let { imageUrl = article.imageUrl } = req.body;
 
     if (!imageFile) {
-      await Article.edit(title, imageUrl);
+      await Article.edit(title, imageUrl, articleId);
     } else {
       const fileName = Date.now() + path.extname(imageFile.originalname);
 
@@ -116,7 +116,7 @@ const editArticle = async (req, res) => {
 
       imageUrl = `https://storage.googleapis.com/${bucket.name}/articles/${fileName}`;
 
-      await Article.edit(title, imageUrl);
+      await Article.edit(title, imageUrl, articleId);
     }
 
     if (tags) {

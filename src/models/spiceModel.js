@@ -2,7 +2,7 @@ const db = require('../config/database');
 
 const Spice = {
   search: (searchKeyword) => {
-    const sql = `SELECT s.*, GROUP_CONCAT(t.tag) AS tags
+    const sql = `SELECT s.*, GROUP_CONCAT(DISTINCT t.tag ORDER BY t.tag) AS tags
                   FROM spices s 
                   JOIN tags t ON t.entityId = s.id AND t.entityType = 'spices'
                   WHERE s.name LIKE ? OR t.tag LIKE ? OR s.benefits LIKE ?
@@ -10,7 +10,7 @@ const Spice = {
     return db.query(sql, [`%${searchKeyword}%`, `%${searchKeyword}%`, `%${searchKeyword}%`]);
   },
   getAll: () => {
-    const sql = `SELECT s.*, GROUP_CONCAT(t.tag) AS tags
+    const sql = `SELECT s.*, GROUP_CONCAT(DISTINCT t.tag ORDER BY t.tag) AS tags
                   FROM spices s 
                   JOIN tags t ON t.entityId = s.id AND t.entityType = 'spices'
                   GROUP BY s.id`;
