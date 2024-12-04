@@ -39,8 +39,9 @@ const addRecipeValidation = [
     .exists().withMessage('Ingredients is required').bail()
     .isArray().withMessage('Ingredients must be an array')
     .custom((value) => {
-      const isArrayValid = value.every((item) => item !== 'object');
-      if (!isArrayValid) throw new Error('Contents must be a valid array format');
+      for (let i = 0; i < value.length; i++) {
+        if (!value[i]) throw new Error(`Array contains an empty item at index ${i}. Please provide valid content`);
+      }
       return true;
     }),
 
@@ -59,8 +60,9 @@ const addRecipeValidation = [
     .exists().withMessage('Steps is required').bail()
     .isArray().withMessage('Steps must be an array')
     .custom((value) => {
-      const isArrayValid = value.every((item) => item !== 'object');
-      if (!isArrayValid) throw new Error('Contents must be a valid array format');
+      for (let i = 0; i < value.length; i++) {
+        if (!value[i]) throw new Error(`Array contains an empty item at index ${i}. Please provide valid content`);
+      }
       return true;
     }),
 
@@ -148,8 +150,9 @@ const editRecipeValidation = [
   body('ingredients').optional()
     .isArray().withMessage('Ingredients must be an array')
     .custom((value) => {
-      const isArrayValid = value.every((item) => item !== 'object');
-      if (!isArrayValid) throw new Error('Contents must be a valid array format');
+      for (let i = 0; i < value.length; i++) {
+        if (!value[i]) throw new Error(`Array contains an empty item at index ${i}. Please provide valid content`);
+      }
       return true;
     }),
 
@@ -167,8 +170,9 @@ const editRecipeValidation = [
   body('steps').optional()
     .isArray().withMessage('Steps must be an array')
     .custom((value) => {
-      const isArrayValid = value.every((item) => item !== 'object');
-      if (!isArrayValid) throw new Error('Contents must be a valid array format');
+      for (let i = 0; i < value.length; i++) {
+        if (!value[i]) throw new Error(`Array contains an empty item at index ${i}. Please provide valid content`);
+      }
       return true;
     }),
 
