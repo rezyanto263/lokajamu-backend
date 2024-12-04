@@ -32,11 +32,17 @@ const addArticleValidation = [
 
   body('contents')
     .exists().withMessage('Contents is required').bail()
-    .isArray().withMessage('Contents must be an array'),
+    .isArray().withMessage('Contents must be an array')
+    .custom((value) => {
+      const isArrayValid = value.every((item) => typeof item !== 'object');
+      if (!isArrayValid) throw new Error('Contents must be a valid array of object format');
+      return true;
+    }),
 
   body('contents.*.type')
     .notEmpty().withMessage('Content type is required').bail()
-    .isString().withMessage('Content type must be a string'),
+    .isString().withMessage('Content type must be a string')
+    .isIn(['subtitle', 'paragraph']).withMessage('Content type must be either subtitle or paragraph'),
 
   body('contents.*.text')
     .notEmpty().withMessage('Content text is required').bail()
@@ -98,11 +104,17 @@ const editArticleValidation = [
     }),
 
   body('contents').optional()
-    .isArray().withMessage('Contents must be an array'),
+    .isArray().withMessage('Contents must be an array')
+    .custom((value) => {
+      const isArrayValid = value.every((item) => item !== 'object');
+      if (!isArrayValid) throw new Error('Contents must be a valid array format');
+      return true;
+    }),
 
   body('contents.*.type')
     .notEmpty().withMessage('Content type is required').bail()
-    .isString().withMessage('Content type must be a string'),
+    .isString().withMessage('Content type must be a string')
+    .isIn(['subtitle', 'paragraph']).withMessage('Content type must be either subtitle or paragraph'),
 
   body('contents.*.text')
     .notEmpty().withMessage('Content text is required').bail()

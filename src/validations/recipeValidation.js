@@ -37,7 +37,12 @@ const addRecipeValidation = [
 
   body('ingredients')
     .exists().withMessage('Ingredients is required').bail()
-    .isArray().withMessage('Ingredients must be an array'),
+    .isArray().withMessage('Ingredients must be an array')
+    .custom((value) => {
+      const isArrayValid = value.every((item) => item !== 'object');
+      if (!isArrayValid) throw new Error('Contents must be a valid array format');
+      return true;
+    }),
 
   body('ingredients.*.ingredient')
     .notEmpty().withMessage('Ingredient name is required').bail()
@@ -52,7 +57,12 @@ const addRecipeValidation = [
 
   body('steps')
     .exists().withMessage('Steps is required').bail()
-    .isArray().withMessage('Steps must be an array'),
+    .isArray().withMessage('Steps must be an array')
+    .custom((value) => {
+      const isArrayValid = value.every((item) => item !== 'object');
+      if (!isArrayValid) throw new Error('Contents must be a valid array format');
+      return true;
+    }),
 
   body('steps.*.stepNumber')
     .notEmpty().withMessage('Step number is required').bail()
@@ -136,7 +146,12 @@ const editRecipeValidation = [
     }),
 
   body('ingredients').optional()
-    .isArray().withMessage('Ingredients must be an array'),
+    .isArray().withMessage('Ingredients must be an array')
+    .custom((value) => {
+      const isArrayValid = value.every((item) => item !== 'object');
+      if (!isArrayValid) throw new Error('Contents must be a valid array format');
+      return true;
+    }),
 
   body('ingredients.*.ingredient')
     .notEmpty().withMessage('Ingredient name is required').bail()
@@ -150,7 +165,12 @@ const editRecipeValidation = [
     .isString().withMessage('Notes must be a string'),
 
   body('steps').optional()
-    .isArray().withMessage('Steps must be an array'),
+    .isArray().withMessage('Steps must be an array')
+    .custom((value) => {
+      const isArrayValid = value.every((item) => item !== 'object');
+      if (!isArrayValid) throw new Error('Contents must be a valid array format');
+      return true;
+    }),
 
   body('steps.*.stepNumber')
     .notEmpty().withMessage('Step number is required').bail()
