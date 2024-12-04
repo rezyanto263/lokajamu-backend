@@ -21,15 +21,6 @@ app.use('/api/recipes', recipeRoutes);
 const articleRoutes = require('./src/routes/articleRoute');
 app.use('/api/articles', articleRoutes);
 
-// db.getConnection()
-//   .then(() => {
-//     app.listen(PORT, () => {
-//       console.log(`Server is running on port ${PORT}`);
-//     });
-//   })
-//   .catch((err) => {
-//     console.log(`Database Error: ${err.message}`);
-//   });
 (async () => {
   try {
     await db.getConnection();
