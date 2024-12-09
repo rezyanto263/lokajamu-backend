@@ -145,7 +145,7 @@ const editRecipe = async (req, res) => {
 
     if (tips) {
       await Tip.deleteAll(recipeId);
-      await Tip.addBatch(steps.map((s) => [recipeId, s.description]));
+      await Tip.addBatch(tips.map((s) => [recipeId, s.description]));
     }
 
     return res.json({
