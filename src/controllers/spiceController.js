@@ -4,6 +4,7 @@ const Recipe = require('../models/recipeModel');
 const path = require('path');
 const fs = require('fs');
 const bucket = require('../config/googleCloud');
+const { predictions } = require('../services/modelService');
 
 const addSpice = async (req, res) => {
   const { name, tags, description, benefits } = req.body;
@@ -175,10 +176,49 @@ const deleteSpice = async (req, res) => {
   }
 };
 
+const predictSpice = async (req, res) => {
+  const imageFile = req.file;
+  const result = await predictions(imageFile.path);
+  fs.unlinkSync(imageFile.path);
+
+  const classNames = ['Asam Jawa', 'Belimbing Sayur', 'Jahe', 'Jeruk Nipis', 'Kunyit', 'Lengkuas', 'Serai'];
+  const maxIndex = Object.keys(result).reduce((a, b) => result[a] > result[b] ? a : b);
+
+  const predictedClass = classNames[maxIndex];
+  const maxProbability = result[maxIndex];
+  const formattedProbability = maxProbability.toFixed(4);
+  const [spiceResults] = await Spice.search(predictedClass);
+
+  if (spiceResults.length === 0) return res.status(404).json({ status: 'fail', message: 'Spice not found' });
+
+  if (formattedProbability < 0.7) return res.status(422).json({ status: 'fail', message: 'No prediction could be made for the provided image. Try another image' });
+
+  const spice = spiceResults[0];
+  spice.tags = spice.tags ? spice.tags.split(',') : [];
+  const [recipeResults] = await Recipe.search(spice.name);
+  const jamuList = recipeResults.map((recipe) => recipe.name);
+
+  const message = 0.8 < formattedProbability >= 0.7 ? 'Prediction Success' : 'The model is unable to confidently predict the result. Please try another image';
+
+  return res.json({
+    status: 'success',
+    message: message,
+    data: {
+      class: predictedClass,
+      probability: formattedProbability,
+      spice: {
+        ...spice,
+        jamuList
+      }
+    }
+  });
+};
+
 module.exports = {
   addSpice,
   editSpice,
   getSpiceDetails,
   searchAllSpices,
-  deleteSpice
+  deleteSpice,
+  predictSpice
 };

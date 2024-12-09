@@ -20,6 +20,14 @@ const Spice = {
     const sql = 'SELECT * FROM spices WHERE id = ?';
     return db.query(sql, [id]);
   },
+  getByName: (name) => {
+    const sql = `SELECT s.*, GROUP_CONCAT(DISTINCT t.tag ORDER BY t.tag) AS tags
+                  FROM spices s 
+                  JOIN tags t ON t.entityId = s.id AND t.entityType = 'spices'
+                  WHERE s.name = ?
+                  GROUP BY s.id`;
+    return db.query(sql, [name]);
+  },
   add: (name, imageUrl, description, benefits) => {
     const sql = 'INSERT INTO spices (name, imageUrl, description, benefits) VALUES (?, ?, ?, ?)';
     return db.query(sql, [name, imageUrl, description, benefits]);

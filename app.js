@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const db = require('./src/config/database');
+const { loadModel } = require('./src/services/modelService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,11 +27,14 @@ app.use('/api/articles', articleRoutes);
     await db.getConnection();
     console.log('Database connected successfully.');
 
+    await loadModel();
+    console.log('Model loaded successfully.');
+
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
   } catch (err) {
-    console.error('Database Error:', err.message);
+    console.error('Initialize Error:', err.message);
     process.exit(1);
   }
 })();
