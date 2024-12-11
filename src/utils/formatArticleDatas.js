@@ -4,11 +4,11 @@ const formatArticleDatas = (rows) => {
   return rows.map((row) => {
     const tags = row.tags ? row.tags.split(',') : [];
 
-    const contents = row.contentTypes
-      ? row.contentTypes.split('|').map((contentType, index) => ({
-        type: contentType,
-        text: row.contentTexts.split('|')[index]
-      }))
+    const contents = row.contentDetails
+      ? row.contentDetails.split('|').map((content) => {
+        const [type, text] = content.split(':');
+        return { type, text };
+      })
       : [];
 
     return {

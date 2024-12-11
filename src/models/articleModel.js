@@ -4,8 +4,7 @@ const Article = {
   getAll: () => {
     const sql = `SELECT a.*,
                     GROUP_CONCAT(DISTINCT t.tag ORDER BY t.tag) AS tags,
-                    GROUP_CONCAT(DISTINCT c.type ORDER BY c.id SEPARATOR '|') AS contentTypes,
-                    GROUP_CONCAT(DISTINCT c.text ORDER BY c.id SEPARATOR '|') AS contentTexts
+                    GROUP_CONCAT(DISTINCT CONCAT(c.type, ':', c.text) ORDER BY c.id SEPARATOR '|') AS contentDetails
                   FROM articles a
                   LEFT JOIN tags t ON t.entityId = a.id AND t.entityType = 'articles'
                   LEFT JOIN contents c ON c.articlesId = a.id
@@ -15,8 +14,7 @@ const Article = {
   search: (searchKeyword) => {
     const sql = `SELECT a.*,
                     GROUP_CONCAT(DISTINCT t.tag ORDER BY t.tag) AS tags,
-                    GROUP_CONCAT(DISTINCT c.type ORDER BY c.id SEPARATOR '|') AS contentTypes,
-                    GROUP_CONCAT(DISTINCT c.text ORDER BY c.id SEPARATOR '|') AS contentTexts
+                    GROUP_CONCAT(DISTINCT CONCAT(c.type, ':', c.text) ORDER BY c.id SEPARATOR '|') AS contentDetails
                   FROM articles a
                   LEFT JOIN tags t ON t.entityId = a.id AND t.entityType = 'articles'
                   LEFT JOIN contents c ON c.articlesId = a.id
@@ -27,8 +25,7 @@ const Article = {
   getById: (id) => {
     const sql = `SELECT a.*,
                     GROUP_CONCAT(DISTINCT t.tag ORDER BY t.tag) AS tags,
-                    GROUP_CONCAT(DISTINCT c.type ORDER BY c.id SEPARATOR '|') AS contentTypes,
-                    GROUP_CONCAT(DISTINCT c.text ORDER BY c.id SEPARATOR '|') AS contentTexts
+                    GROUP_CONCAT(DISTINCT CONCAT(c.type, ':', c.text) ORDER BY c.id SEPARATOR '|') AS contentDetails
                   FROM articles a
                   LEFT JOIN tags t ON t.entityId = a.id AND t.entityType = 'articles'
                   LEFT JOIN contents c ON c.articlesId = a.id
