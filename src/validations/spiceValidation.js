@@ -99,7 +99,14 @@ const editSpiceValidation = [
     }),
 ];
 
+const predictSpiceValidation = [
+  body('image')
+    .custom(isImageExist).bail()
+    .custom(isFileLessThan10MB).custom(isFileExtensionValid),
+];
+
 module.exports = {
   addSpiceValidation,
-  editSpiceValidation
+  editSpiceValidation,
+  predictSpiceValidation
 };
