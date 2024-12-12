@@ -9,7 +9,7 @@ const Recipe = {
                   GROUP_CONCAT(DISTINCT i.notes ORDER BY i.id SEPARATOR '|') AS ingredientNotes,
                   GROUP_CONCAT(DISTINCT s.stepNumber ORDER BY s.stepNumber SEPARATOR '|') AS stepNumbers, 
                   GROUP_CONCAT(DISTINCT s.instruction ORDER BY s.stepNumber SEPARATOR '|') AS instructions, 
-                  GROUP_CONCAT(DISTINCT ti.description) AS tips
+                  GROUP_CONCAT(DISTINCT ti.description SEPARATOR '|') AS tips
                 FROM recipes r
                 LEFT JOIN tags ta ON ta.entityId = r.id AND ta.entityType = 'recipes'
                 LEFT JOIN ingredients i ON i.recipesId = r.id
@@ -27,7 +27,7 @@ const Recipe = {
                     GROUP_CONCAT(DISTINCT i.notes ORDER BY i.id SEPARATOR '|') AS ingredientNotes,
                     GROUP_CONCAT(DISTINCT s.stepNumber ORDER BY s.stepNumber SEPARATOR '|') AS stepNumbers,
                     GROUP_CONCAT(DISTINCT s.instruction ORDER BY s.stepNumber SEPARATOR '|') AS instructions,
-                    GROUP_CONCAT(DISTINCT ti.description) AS tips
+                    GROUP_CONCAT(DISTINCT ti.description SEPARATOR '|') AS tips
                   FROM recipes r
                   LEFT JOIN tags ta ON ta.entityId = r.id AND ta.entityType = 'recipes'
                   LEFT JOIN ingredients i ON i.recipesId = r.id
@@ -44,7 +44,7 @@ const Recipe = {
                     GROUP_CONCAT(DISTINCT i.notes ORDER BY i.id SEPARATOR '|') AS ingredientNotes,
                     GROUP_CONCAT(DISTINCT s.stepNumber ORDER BY s.stepNumber SEPARATOR '|') AS stepNumbers,
                     GROUP_CONCAT(DISTINCT s.instruction ORDER BY s.stepNumber SEPARATOR '|') AS instructions,
-                    GROUP_CONCAT(DISTINCT ti.description) AS tips
+                    GROUP_CONCAT(DISTINCT ti.description SEPARATOR '|') AS tips
                   FROM recipes r
                   LEFT JOIN tags ta ON ta.entityId = r.id AND ta.entityType = 'recipes'
                   LEFT JOIN ingredients i ON i.recipesId = r.id

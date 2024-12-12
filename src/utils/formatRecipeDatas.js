@@ -1,4 +1,5 @@
 const formatRecipeDatas = (rows) => {
+  console.log(rows);
   return rows.map((row) => {
     const tags = row.tags ? row.tags.split(',') : [];
 
@@ -6,7 +7,7 @@ const formatRecipeDatas = (rows) => {
       ? row.ingredientNames.split('|').map((name, index) => ({
         ingredient: name,
         quantity: row.ingredientQuantities.split('|')[index],
-        notes: row.ingredientNotes.split('|')[index] ? row.ingredientNotes.split('|')[index] : null,
+        notes: row.ingredientNotes ? row.ingredientNotes.split('|')[index] ? row.ingredientNotes.split('|')[index] : null : null,
       }))
       : [];
 
@@ -17,7 +18,7 @@ const formatRecipeDatas = (rows) => {
       }))
       : [];
 
-    const tips = row.tips ? row.tips.split(',') : [];
+    const tips = row.tips ? row.tips.split('|') : [];
 
     return {
       id: row.id,
