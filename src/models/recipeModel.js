@@ -4,9 +4,7 @@ const Recipe = {
   search: (searchKeyword) => {
     const sql = `SELECT r.*, 
                   GROUP_CONCAT(DISTINCT ta.tag ORDER BY ta.tag) AS tags,
-                  GROUP_CONCAT(DISTINCT i.ingredient ORDER BY i.id SEPARATOR '|') AS ingredientNames,
-                  GROUP_CONCAT(DISTINCT i.quantity ORDER BY i.id SEPARATOR '|') AS ingredientQuantities,
-                  GROUP_CONCAT(DISTINCT i.notes ORDER BY i.id SEPARATOR '|') AS ingredientNotes,
+                  GROUP_CONCAT(DISTINCT CONCAT(i.ingredient, ':', i.quantity, IFNULL(CONCAT(':', i.notes), '')) ORDER BY i.id SEPARATOR '|') AS ingredientDetails,
                   GROUP_CONCAT(DISTINCT s.stepNumber ORDER BY s.stepNumber SEPARATOR '|') AS stepNumbers, 
                   GROUP_CONCAT(DISTINCT s.instruction ORDER BY s.stepNumber SEPARATOR '|') AS instructions, 
                   GROUP_CONCAT(DISTINCT ti.description SEPARATOR '|') AS tips
@@ -22,9 +20,7 @@ const Recipe = {
   getAll: () => {
     const sql =  `SELECT r.*, 
                     GROUP_CONCAT(DISTINCT ta.tag ORDER BY ta.tag) AS tags,
-                    GROUP_CONCAT(DISTINCT i.ingredient ORDER BY i.id SEPARATOR '|') AS ingredientNames,
-                    GROUP_CONCAT(DISTINCT i.quantity ORDER BY i.id SEPARATOR '|') AS ingredientQuantities,
-                    GROUP_CONCAT(DISTINCT i.notes ORDER BY i.id SEPARATOR '|') AS ingredientNotes,
+                    GROUP_CONCAT(DISTINCT CONCAT(i.ingredient, ':', i.quantity, IFNULL(CONCAT(':', i.notes), '')) ORDER BY i.id SEPARATOR '|') AS ingredientDetails,
                     GROUP_CONCAT(DISTINCT s.stepNumber ORDER BY s.stepNumber SEPARATOR '|') AS stepNumbers,
                     GROUP_CONCAT(DISTINCT s.instruction ORDER BY s.stepNumber SEPARATOR '|') AS instructions,
                     GROUP_CONCAT(DISTINCT ti.description SEPARATOR '|') AS tips
@@ -39,9 +35,7 @@ const Recipe = {
   getById: (id) => {
     const sql = `SELECT r.*,
                     GROUP_CONCAT(DISTINCT ta.tag ORDER BY ta.tag) AS tags,
-                    GROUP_CONCAT(DISTINCT i.ingredient ORDER BY i.id SEPARATOR '|') AS ingredientNames,
-                    GROUP_CONCAT(DISTINCT i.quantity ORDER BY i.id SEPARATOR '|') AS ingredientQuantities,
-                    GROUP_CONCAT(DISTINCT i.notes ORDER BY i.id SEPARATOR '|') AS ingredientNotes,
+                    GROUP_CONCAT(DISTINCT CONCAT(i.ingredient, ':', i.quantity, IFNULL(CONCAT(':', i.notes), '')) ORDER BY i.id SEPARATOR '|') AS ingredientDetails,
                     GROUP_CONCAT(DISTINCT s.stepNumber ORDER BY s.stepNumber SEPARATOR '|') AS stepNumbers,
                     GROUP_CONCAT(DISTINCT s.instruction ORDER BY s.stepNumber SEPARATOR '|') AS instructions,
                     GROUP_CONCAT(DISTINCT ti.description SEPARATOR '|') AS tips

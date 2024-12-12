@@ -1,14 +1,13 @@
 const formatRecipeDatas = (rows) => {
-  console.log(rows);
   return rows.map((row) => {
     const tags = row.tags ? row.tags.split(',') : [];
 
-    const ingredients = row.ingredientNames
-      ? row.ingredientNames.split('|').map((name, index) => ({
-        ingredient: name,
-        quantity: row.ingredientQuantities.split('|')[index],
-        notes: row.ingredientNotes ? row.ingredientNotes.split('|')[index] ? row.ingredientNotes.split('|')[index] : null : null,
-      }))
+    console.log(row.ingredientDetails);
+    const ingredients = row.ingredientDetails
+      ? row.ingredientDetails.split('|').map((i) => {
+        const [ingredient, quantity, notes = null] = i.split(':');
+        return { ingredient, quantity, notes };
+      })
       : [];
 
     const steps = row.stepNumbers
