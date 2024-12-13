@@ -185,20 +185,20 @@ const predictSpice = async (req, res) => {
   const maxIndex = Object.keys(result).reduce((a, b) => result[a] > result[b] ? a : b);
 
   const predictedClass = classNames[maxIndex];
-  const maxProbability = result[maxIndex];
-  const formattedProbability = maxProbability.toFixed(4);
+  const maxProbability = result[maxIndex] * 100;
+  const formattedProbability = maxProbability;
   const [spiceResults] = await Spice.search(predictedClass);
 
   if (spiceResults.length === 0) return res.status(404).json({ status: 'fail', message: 'Spice not found' });
 
-  if (formattedProbability < 0.7) return res.status(422).json({ status: 'fail', message: 'No prediction could be made for the provided image. Try another image' });
+  if (maxProbability < 0.7) return res.status(422).json({ status: 'fail', message: 'No prediction could be made for the provided image. Try another image' });
 
   const spice = spiceResults[0];
   spice.tags = spice.tags ? spice.tags.split(',') : [];
   const [recipeResults] = await Recipe.search(spice.name);
   const jamuList = recipeResults.map((recipe) => recipe.name);
 
-  const message = 0.8 < formattedProbability >= 0.7 ? 'Prediction Success' : 'The model is unable to confidently predict the result. Please try another image';
+  const message = 0.8 < maxProbability >= 0.7 ? 'Prediction Success' : 'The model is unable to confidently predict the result. Please try another image';
 
   return res.json({
     status: 'success',
