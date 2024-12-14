@@ -178,40 +178,47 @@ const deleteSpice = async (req, res) => {
 
 const predictSpice = async (req, res) => {
   const imageFile = req.file;
-  const result = await predictions(imageFile.path);
-  fs.unlinkSync(imageFile.path);
 
-  const classNames = ['Asam Jawa', 'Belimbing Sayur', 'Jahe', 'Jeruk Nipis', 'Kunyit', 'Lengkuas', 'Serai'];
-  const maxIndex = Object.keys(result).reduce((a, b) => result[a] > result[b] ? a : b);
+  try {
+    const result = await predictions(imageFile.path);
+    fs.unlinkSync(imageFile.path);
 
-  const predictedClass = classNames[maxIndex];
-  const maxProbability = result[maxIndex] * 100;
-  const formattedProbability = maxProbability;
-  const [spiceResults] = await Spice.search(predictedClass);
+    const classNames = ['Asam Jawa', 'Belimbing Sayur', 'Jahe', 'Jeruk Nipis', 'Kunyit', 'Lengkuas', 'Serai'];
+    const maxIndex = Object.keys(result).reduce((a, b) => result[a] > result[b] ? a : b);
 
-  if (spiceResults.length === 0) return res.status(404).json({ status: 'fail', message: 'Spice not found' });
+    const predictedClass = classNames[maxIndex];
+    const maxProbability = result[maxIndex];
 
-  if (maxProbability < 0.7) return res.status(422).json({ status: 'fail', message: 'No prediction could be made for the provided image. Try another image' });
+    if (maxProbability < 0.7) return res.status(422).json({ status: 'fail', message: 'No prediction could be made for the provided image. Try another image' });
 
-  const spice = spiceResults[0];
-  spice.tags = spice.tags ? spice.tags.split(',') : [];
-  const [recipeResults] = await Recipe.search(spice.name);
-  const jamuList = recipeResults.map((recipe) => recipe.name);
+    const formattedProbability = maxProbability * 100;
+    const [spiceResults] = await Spice.search(predictedClass);
 
-  const message = 0.8 < maxProbability >= 0.7 ? 'Prediction Success' : 'The model is unable to confidently predict the result. Please try another image';
+    if (spiceResults.length === 0) return res.status(404).json({ status: 'fail', message: 'Spice not found' });
 
-  return res.json({
-    status: 'success',
-    message: message,
-    data: {
-      class: predictedClass,
-      probability: formattedProbability,
-      spice: {
-        ...spice,
-        jamuList
+    const spice = spiceResults[0];
+    spice.tags = spice.tags ? spice.tags.split(',') : [];
+    const [recipeResults] = await Recipe.search(spice.name);
+    const jamuList = recipeResults.map((recipe) => recipe.name);
+
+    const message = 0.8 < maxProbability >= 0.7 ? 'Prediction Success' : 'The model is unable to confidently predict the result. Please try another image';
+
+    return res.json({
+      status: 'success',
+      message: message,
+      data: {
+        class: predictedClass,
+        probability: formattedProbability,
+        spice: {
+          ...spice,
+          jamuList
+        }
       }
-    }
-  });
+    });
+  } catch (err) {
+    console.error(`Error occured: ${err.message}`);
+    return res.status(500).json({ status: 'error', message: 'Can not predict image data' });
+  }
 };
 
 module.exports = {

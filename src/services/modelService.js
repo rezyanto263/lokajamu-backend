@@ -13,11 +13,17 @@ const predictions = async (imageFilePath) => {
   try {
     const imageFile = fs.readFileSync(imageFilePath);
 
-    const inputTensor = tfjs.node
-      .decodeImage(imageFile)
+    let inputTensor = tfjs.node.decodeImage(imageFile);
+
+    if (inputTensor.shape[2] === 4) {
+      inputTensor = inputTensor.slice([0, 0, 0], [-1, -1, 3]);
+    }
+
+    inputTensor = inputTensor
       .resizeNearestNeighbor([224, 224])
       .toFloat()
-      .div(tfjs.scalar(255)).expandDims(0);
+      .div(tfjs.scalar(255))
+      .expandDims(0);
 
     const prediction = model.predict(inputTensor).data();
 
